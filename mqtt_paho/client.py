@@ -6,7 +6,10 @@ def on_connect(client, userdata, flags, rc):
 
     # Subscribing in on_connect() means that if we lose the connection and
     # reconnect then subscriptions will be renewed.
-    client.subscribe("$SYS/#")
+    # reception de tous les messages
+    #client.subscribe("$SYS/#")
+    client.sucribe("test_channel")
+
 
 # The callback for when a PUBLISH message is received from the server.
 def on_message(client, userdata, msg):
