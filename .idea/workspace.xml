@@ -37,8 +37,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/mqtt_paho/client.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="90">
-              <caret line="6" column="12" selection-start-line="6" selection-start-column="12" selection-end-line="6" selection-end-column="12" />
+            <state relative-caret-position="180">
+              <caret line="12" column="71" selection-start-line="12" selection-start-column="71" selection-end-line="12" selection-end-column="71" />
               <folding>
                 <element signature="e#0#54#0" expanded="true" />
               </folding>
@@ -305,7 +305,7 @@
       <workItem from="1558340983975" duration="1262000" />
       <workItem from="1558452954415" duration="1118000" />
       <workItem from="1558454199996" duration="1339000" />
-      <workItem from="1558512555865" duration="4469000" />
+      <workItem from="1558512555865" duration="4806000" />
     </task>
     <task id="LOCAL-00001" summary="creation image video">
       <created>1558254673380</created>
@@ -489,11 +489,25 @@
       <option name="project" value="LOCAL" />
       <updated>1558529526431</updated>
     </task>
-    <option name="localTasksCounter" value="27" />
+    <task id="LOCAL-00027" summary="e">
+      <created>1558529608099</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1558529608099</updated>
+    </task>
+    <task id="LOCAL-00028" summary="e">
+      <created>1558529774289</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1558529774289</updated>
+    </task>
+    <option name="localTasksCounter" value="29" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="13239000" />
+    <option name="totallyTimeSpent" value="13576000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="2613" y="149" width="1563" height="1024" extended-state="0" />
@@ -645,8 +659,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/mqtt_paho/client.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="6" column="12" selection-start-line="6" selection-start-column="12" selection-end-line="6" selection-end-column="12" />
+        <state relative-caret-position="180">
+          <caret line="12" column="71" selection-start-line="12" selection-start-column="71" selection-end-line="12" selection-end-column="71" />
           <folding>
             <element signature="e#0#54#0" expanded="true" />
           </folding>

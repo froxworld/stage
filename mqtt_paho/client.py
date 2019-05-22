@@ -9,7 +9,8 @@ print (time.clock())
 client.connect(repartiteur)  # connection au repartiteur
 time.sleep(4)
 client.disconnect() # deconnection
-print("le client %s est deconecter et est rester %s" % client % temps)
+temps = temps - time.clock()
+print('le client %{0} est deconecter et est rester {1}'.format(client, temps))
 
 
 '''
