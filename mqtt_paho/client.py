@@ -1,11 +1,17 @@
 import paho.mqtt.client as mqtt  # import du client mqtt
-import time  # pour affichier notre heure
+from time import gmtime, strftime, time# pour affichier notre heure
+
+class Extension:
+    jpg = 1
+    png = 2
+    svg = 3
+
 
 id_client = '1'
-image1 = "test1.jpg"
-chemin_1 = "/home/pi/francois/image/"
+nom_image = "test"
+chemin = "/home/pi/francois/image/"
 id_camera = 0
-
+compteur = 0
 
 # methode de login au raapartiteur (client, userdata, level, buf)
 def on_log(client, donnee, niveau, tampon):
@@ -38,13 +44,17 @@ client.connect(repartiteur)  # connection au repartiteur
 client.loop_start()  # debut de la boucle
 
 #  publication de donnee "topic", "contenu du topic "
+temps = strftime("%a, %d %b %Y %H:%M:%S +0000", gmtime())
 client.publish("heure", "{0}".format(temps))
 client.publish("heure/1", "{0}".format(temps))
 client.publish("heure/2", "{0}".format(temps))
 if id_camera == 0:
-    client.publish("camera", "camera/{0}".format(chemin_1))
+    client.publish("camera", "camera/{0}/{1}.{2}".format(chemin,nom_image, Extension.jpg))
+    compteur = compteur + 1
 
-client.publish("photo", "{0}{1}".format(chemin_1, image1))
+client.publish("photo", "image/{0}/{1}.{2}".format(chemin,nom_image, Extension.jpg))
+
+client.publish("video", "video")
 
 # reception d un topic on s'abonne
 client.subscribe(("heure/#"))
