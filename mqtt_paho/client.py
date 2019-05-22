@@ -33,8 +33,7 @@ def on_disconect(le_client, donnee, drapeaux, resultat_de_connection):
 # derniere methode on_message quand le client a souscrit
 def on_message(le_client, donnee, message):
     sujet = message.topic
-    decodage = str(message.plaload.decode("utf-8", "ignore"))
-    print(decodage)
+    print(sujet)
 
 
 repartiteur = "10.42.0.1"  # adresse du repartiteur (broker)
@@ -66,7 +65,7 @@ client.publish("photo", "{0}/photo/{1}.{2}".format(chemin,nom_image, Extension.j
 client.publish("video", "video")
 
 # reception d un topic on s'abonne
-client.subscribe(("heure/#"))
+client.subscribe(("photo/#"))
 
 time.sleep(4)
 client.loop_stop()  # finb de la boucle
