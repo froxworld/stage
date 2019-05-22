@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f4254f7a-6e1b-453f-8c28-fa5a8be4b4e8" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/paho.mqtt.python" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -37,8 +36,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/mqtt_paho/client.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="300">
-              <caret line="20" lean-forward="true" selection-start-line="20" selection-end-line="20" />
+            <state relative-caret-position="75">
+              <caret line="5" lean-forward="true" selection-start-line="5" selection-end-line="5" />
             </state>
           </provider>
         </entry>
@@ -72,8 +71,8 @@
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="801" />
-    <option name="y" value="141" />
+    <option name="x" value="2701" />
+    <option name="y" value="160" />
     <option name="width" value="1563" />
     <option name="height" value="1024" />
   </component>
@@ -106,7 +105,7 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+    <property name="settings.editor.selected.configurable" value="settings.github" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -154,6 +153,9 @@
       <module name="stage" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
       <option name="SDK_HOME" value="" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/python" />
       <option name="IS_MODULE_SDK" value="true" />
@@ -282,7 +284,7 @@
       <workItem from="1558254584273" duration="3851000" />
       <workItem from="1558340983975" duration="1262000" />
       <workItem from="1558452954415" duration="1118000" />
-      <workItem from="1558454199996" duration="980000" />
+      <workItem from="1558454199996" duration="1339000" />
     </task>
     <task id="LOCAL-00001" summary="creation image video">
       <created>1558254673380</created>
@@ -340,16 +342,38 @@
       <option name="project" value="LOCAL" />
       <updated>1558455088047</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="ajout de paho">
+      <created>1558455210466</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1558455210466</updated>
+    </task>
+    <task id="LOCAL-00010" summary="retire de paho">
+      <created>1558455309584</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1558455309584</updated>
+    </task>
+    <task id="LOCAL-00011" summary="retire de paho">
+      <created>1558455476178</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1558455476178</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="8411000" />
+    <option name="totallyTimeSpent" value="8770000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="801" y="141" width="1563" height="1024" extended-state="0" />
+    <frame x="906" y="72" width="1563" height="1024" extended-state="0" />
+    <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.3182117" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.3182117" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -364,7 +388,7 @@
       <window_info anchor="bottom" id="Database Changes" order="9" />
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
       <window_info anchor="bottom" id="Terminal" order="11" weight="0.32955715" />
-      <window_info anchor="bottom" id="Python Console" order="12" visible="true" weight="0.37875536" />
+      <window_info active="true" anchor="bottom" id="Python Console" order="12" visible="true" weight="0.37875536" />
       <window_info active="true" anchor="right" x="0" y="0" width="424" height="863" id="Documentation" order="0" side_tool="true" visible="true" weight="0.27856168" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="1" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="2" weight="0.25" />
@@ -377,10 +401,14 @@
     <option name="version" value="1" />
   </component>
   <component name="VcsManagerConfiguration">
+    <ignored-roots>
+      <path value="$PROJECT_DIR$/paho.mqtt.python" />
+    </ignored-roots>
     <MESSAGE value="creation image video" />
     <MESSAGE value="ajout des thread" />
     <MESSAGE value="ajout de paho" />
-    <option name="LAST_COMMIT_MESSAGE" value="ajout de paho" />
+    <MESSAGE value="retire de paho" />
+    <option name="LAST_COMMIT_MESSAGE" value="retire de paho" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/python/thread1.py">
@@ -482,8 +510,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/mqtt_paho/client.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="300">
-          <caret line="20" lean-forward="true" selection-start-line="20" selection-end-line="20" />
+        <state relative-caret-position="75">
+          <caret line="5" lean-forward="true" selection-start-line="5" selection-end-line="5" />
         </state>
       </provider>
     </entry>
