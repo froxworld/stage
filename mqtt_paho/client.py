@@ -28,7 +28,7 @@ client.on_log = on_log
 client.connect(repartiteur)  # connection au repartiteur
 time.sleep(4)
 client.disconnect()  # deconnection
-temps_total = abs(temps - time.clock())*100
+temps_total = int(abs(temps - time.clock())*1000)
 print('le client {0} est deconecter et est rester {1}'.format(client, temps_total))
 
 '''

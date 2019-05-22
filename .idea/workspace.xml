@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f4254f7a-6e1b-453f-8c28-fa5a8be4b4e8" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/mqtt_paho/client.py" beforeDir="false" afterPath="$PROJECT_DIR$/mqtt_paho/client.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -37,8 +36,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/mqtt_paho/client.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="447">
-              <caret line="30" column="11" lean-forward="true" selection-start-line="30" selection-start-column="11" selection-end-line="30" selection-end-column="11" />
+            <state relative-caret-position="462">
+              <caret line="31" column="81" selection-start-line="31" selection-start-column="81" selection-end-line="31" selection-end-column="81" />
               <folding>
                 <element signature="e#0#54#0" expanded="true" />
               </folding>
@@ -302,7 +301,7 @@
       <workItem from="1558340983975" duration="1262000" />
       <workItem from="1558452954415" duration="1118000" />
       <workItem from="1558454199996" duration="1339000" />
-      <workItem from="1558512555865" duration="5759000" />
+      <workItem from="1558512555865" duration="5826000" />
     </task>
     <task id="LOCAL-00001" summary="creation image video">
       <created>1558254673380</created>
@@ -528,11 +527,18 @@
       <option name="project" value="LOCAL" />
       <updated>1558530824722</updated>
     </task>
-    <option name="localTasksCounter" value="33" />
+    <task id="LOCAL-00033" summary="e">
+      <created>1558530902119</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1558530902119</updated>
+    </task>
+    <option name="localTasksCounter" value="34" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="14529000" />
+    <option name="totallyTimeSpent" value="14596000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="2613" y="149" width="1563" height="1024" extended-state="0" />
@@ -684,8 +690,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/mqtt_paho/client.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="447">
-          <caret line="30" column="11" lean-forward="true" selection-start-line="30" selection-start-column="11" selection-end-line="30" selection-end-column="11" />
+        <state relative-caret-position="462">
+          <caret line="31" column="81" selection-start-line="31" selection-start-column="81" selection-end-line="31" selection-end-column="81" />
           <folding>
             <element signature="e#0#54#0" expanded="true" />
           </folding>
