@@ -6,7 +6,7 @@ id_client = '1'
 
 # methode de login au raapartiteur (client, userdata, level, buf)
 def on_log(client, donnee, niveau, tampon):
-    print("Etat du client:" + tampon)
+    print("log : Etat du client: " + tampon)
 
 
 # methode quand le client va se connecter
@@ -16,18 +16,25 @@ def on_connect(le_client, donnee, drapeaux, resultat_de_connection):
     else:
         print("probleme de connection code de retour =", resultat_de_connection)
 
+# methode au moment de la deconnection
+def on_disconect(le_client, donnee, drapeaux, resultat_de_connection):
+    print("Deconnection du client ave le code de retour ", resultat_de_connection)
+
 
 repartiteur = "10.42.0.1"  # adresse du repartiteur (broker)
 client = mqtt.Client(id_client)  # creation de l'instance d un client
-print("connection au broker ", repartiteur)
+print("connection au repartiteur (broker) ", repartiteur)
 temps = time.clock()
 print (time.clock())
 
-client.on_connect = on_connect
-client.on_log = on_log
+client.on_connect = on_connect  # bizarre en python un appel de methode sans () ?
+client.on_disconnect
+client.on_log = on_log  #  comme la methode on log ne retourne rien on enleve les () a premiere vue
+
 
 client.connect(repartiteur)  # connection au repartiteur
 client.loop_start()  # debut de la boucle
+client.publish("heure", "premier test de message")
 time.sleep(4)
 client.loop_stop()  # finb de la boucle
 client.disconnect()  # deconnection
