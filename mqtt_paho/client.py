@@ -1,6 +1,16 @@
-import paho.mqtt.client as mqtt
+import paho.mqtt.client as mqtt #import du client mqtt
+import time # pour affichier notre heure
+
+repartiteur = "10.42.0.1"  # adresse du repartiteur (broker)
+client  = mqtt.Client("python1")  # creation de l'instance d un client
+print("connection au broker ", repartiteur)
+client.connect(repartiteur)  # connection au repartiteur
+time.sleep(4)
+client.disconnect() # deconnection
+print("le client %s est deconecter " % client)
 
 
+'''
 # The callback for when the client receives a CONNACK response from the server.
 
 def on_connect(client, userdata, flags, resutat_de_conection):
@@ -32,3 +42,5 @@ client.connect("10.42.0.1", 1883, 60)
 
 # creation d une boulce infini pour attendre les messages
 client.loop_forever()
+'''
+
