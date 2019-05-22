@@ -4,6 +4,8 @@ import time  # pour affichier notre heure
 id_client = '1'
 image1 = "test1.jpg"
 chemin_1 = "/home/pi/francois/image/"
+id_camera = 0
+
 
 # methode de login au raapartiteur (client, userdata, level, buf)
 def on_log(client, donnee, niveau, tampon):
@@ -13,7 +15,7 @@ def on_log(client, donnee, niveau, tampon):
 # methode quand le client va se connecter
 def on_connect(le_client, donnee, drapeaux, resultat_de_connection):
     if resultat_de_connection == 0:
-        print("{0} connection reussie".format(le_client))
+        print("connection reussie avec le client :".format(le_client))
     else:
         print("probleme de connection code de retour =", resultat_de_connection)
 
@@ -39,6 +41,8 @@ client.loop_start()  # debut de la boucle
 client.publish("heure", "{0}".format(temps))
 client.publish("heure/1", "{0}".format(temps))
 client.publish("heure/2", "{0}".format(temps))
+if id_camera == 0:
+    client.publish("camera1", "camera{0}".format(chemin_1))
 
 client.publish("photo", "{0}{1}".format(chemin_1, image1))
 
