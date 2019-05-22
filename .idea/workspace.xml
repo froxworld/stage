@@ -37,8 +37,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/mqtt_paho/client.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="180">
-              <caret line="12" column="39" selection-start-line="12" selection-start-column="39" selection-end-line="12" selection-end-column="39" />
+            <state relative-caret-position="60">
+              <caret line="4" selection-start-line="4" selection-end-line="4" />
             </state>
           </provider>
         </entry>
@@ -46,11 +46,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$USER_HOME$/anaconda3/envs/stage/lib/python2.7/site-packages/paho/mqtt/client.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-209">
-              <caret line="261" column="53" selection-start-line="261" selection-start-column="37" selection-end-line="261" selection-end-column="53" />
-              <folding>
-                <element signature="e#702#720#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="-291">
+              <caret line="261" column="31" selection-start-line="261" selection-start-column="23" selection-end-line="261" selection-end-column="31" />
             </state>
           </provider>
         </entry>
@@ -67,6 +64,7 @@
   <component name="FindInProjectRecents">
     <findStrings>
       <find>playload</find>
+      <find>publish</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -303,7 +301,7 @@
       <workItem from="1558340983975" duration="1262000" />
       <workItem from="1558452954415" duration="1118000" />
       <workItem from="1558454199996" duration="1339000" />
-      <workItem from="1558512555865" duration="2421000" />
+      <workItem from="1558512555865" duration="3027000" />
     </task>
     <task id="LOCAL-00001" summary="creation image video">
       <created>1558254673380</created>
@@ -424,11 +422,32 @@
       <option name="project" value="LOCAL" />
       <updated>1558526266491</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="&#10;modif client">
+      <created>1558526731596</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1558526731596</updated>
+    </task>
+    <task id="LOCAL-00019" summary="&#10;modif client">
+      <created>1558526917940</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1558526917940</updated>
+    </task>
+    <task id="LOCAL-00020" summary="&#10;modif client">
+      <created>1558527212209</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1558527212209</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="11191000" />
+    <option name="totallyTimeSpent" value="11797000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="2613" y="149" width="1563" height="1024" extended-state="0" />
@@ -572,18 +591,15 @@
     </entry>
     <entry file="file://$USER_HOME$/anaconda3/envs/stage/lib/python2.7/site-packages/paho/mqtt/client.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-209">
-          <caret line="261" column="53" selection-start-line="261" selection-start-column="37" selection-end-line="261" selection-end-column="53" />
-          <folding>
-            <element signature="e#702#720#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="-291">
+          <caret line="261" column="31" selection-start-line="261" selection-start-column="23" selection-end-line="261" selection-end-column="31" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/mqtt_paho/client.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="12" column="39" selection-start-line="12" selection-start-column="39" selection-end-line="12" selection-end-column="39" />
+        <state relative-caret-position="60">
+          <caret line="4" selection-start-line="4" selection-end-line="4" />
         </state>
       </provider>
     </entry>
