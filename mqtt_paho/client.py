@@ -3,7 +3,7 @@ import time  # pour affichier notre heure
 
 id_client = '1'
 image1 = "test1.jpg"
-chemin_1 = "/home/pi/francois/images/"
+chemin_1 = "/home/pi/francois/image/"
 
 # methode de login au raapartiteur (client, userdata, level, buf)
 def on_log(client, donnee, niveau, tampon):
@@ -34,8 +34,17 @@ client.on_log = on_log  #  comme la methode on log ne retourne rien on enleve le
 
 client.connect(repartiteur)  # connection au repartiteur
 client.loop_start()  # debut de la boucle
+
+#  publication de donnee "topic", "contenu du topic "
 client.publish("heure", "{0}".format(temps))
+client.publish("heure/1", "{0}".format(temps))
+client.publish("heure/2", "{0}".format(temps))
+
 client.publish("photo", "{0}{1}".format(chemin_1, image1))
+
+# reception d un topic on s'abonne
+client.subscribe(("heure/#"))
+
 time.sleep(4)
 client.loop_stop()  # finb de la boucle
 client.disconnect()  # deconnection
