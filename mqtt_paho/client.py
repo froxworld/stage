@@ -10,7 +10,8 @@ def on_connect(client, userdata, flags, rc):
 
     # reception de tous les messages
     # client.subscribe("$SYS/#")
-    client.sucribe("sensors/temperature")
+    #client.sucribe("sensors/#")
+    client.sucribe('-h 10.42.0.1 -t sensors/#')
 
 
 # The callback for when a PUBLISH message is received from the server.
@@ -27,8 +28,5 @@ client.on_message = on_message
 
 client.connect("10.42.0.1", 1883, 60)
 
-# Blocking call that processes network traffic, dispatches callbacks and
-# handles reconnecting.
-# Other loop*() functions are available that give a threaded interface and a
-# manual interface.
+# creation d une boulce infini pour attendre les messages
 client.loop_forever()
