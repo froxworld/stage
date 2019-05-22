@@ -3,15 +3,16 @@ import time  # pour affichier notre heure
 
 id_client = '1'
 
+
 # methode de login au raapartiteur (client, userdata, level, buf)
 def on_log(client, donnee, niveau, tampon):
     print("Etat du client:" + tampon)
 
 
 # methode quand le client va se connecter
-def on_connect(client, donnee, drapeaux, resultat_de_connection):
+def on_connect(le_client, donnee, drapeaux, resultat_de_connection):
     if resultat_de_connection == 0:
-        print("{0} connection reussie".format(client))
+        print("{0} connection reussie".format(le_client))
     else:
         print("probleme de connection code de retour =", resultat_de_connection)
 
@@ -26,10 +27,12 @@ client.on_connect = on_connect
 client.on_log = on_log
 
 client.connect(repartiteur)  # connection au repartiteur
+client.loop_start()  # debut de la boucle
 time.sleep(4)
+client.loop_stop()  # finb de la boucle
 client.disconnect()  # deconnection
-temps_total = int(abs(temps - time.clock())*1000)
-print('le client {0} est deconecter et est rester {1}'.format(client, temps_total))
+temps_total = int(abs(temps - time.clock()) * 1000)
+print('le client {0} est deconecter et est rester {1} secondes'.format(client, temps_total))
 
 '''
 # The callback for when the client receives a CONNACK response from the server.
