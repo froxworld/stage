@@ -2,8 +2,9 @@ import paho.mqtt.client as mqtt #import du client mqtt
 import time # pour affichier notre heure
 
 repartiteur = "10.42.0.1"  # adresse du repartiteur (broker)
-client  = mqtt.Client("python1")  # creation de l'instance d un client
+client = mqtt.Client("python1")  # creation de l'instance d un client
 print("connection au broker ", repartiteur)
+print (time)
 client.connect(repartiteur)  # connection au repartiteur
 time.sleep(4)
 client.disconnect() # deconnection
