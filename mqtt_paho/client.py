@@ -42,9 +42,9 @@ print("connection au repartiteur (broker) ", repartiteur)
 temps = time.clock()
 
 client.on_connect = on_connect  # bizarre en python un appel de methode sans () ?
-client.on_disconnect
+client.on_disconnect = on_disconect
 client.on_log = on_log  #  comme la methode on log ne retourne rien on enleve les () a premiere vue
-client.on_message # quand on fait un sucribe la ppel de la methode on_message est apellee
+client.on_message = on_message  # quand on fait un sucribe la ppel de la methode on_message est apellee
 
 client.connect(repartiteur)  # connection au repartiteur
 client.loop_start()  # debut de la boucle

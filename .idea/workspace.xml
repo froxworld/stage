@@ -37,8 +37,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/mqtt_paho/client.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="482">
-              <caret line="47" column="77" selection-start-line="47" selection-start-column="77" selection-end-line="47" selection-end-column="77" />
+            <state relative-caret-position="363">
+              <caret line="44" column="35" lean-forward="true" selection-start-line="44" selection-start-column="35" selection-end-line="44" selection-end-column="35" />
               <folding>
                 <element signature="e#0#56#0" expanded="true" />
               </folding>
@@ -293,21 +293,7 @@
       <workItem from="1558340983975" duration="1262000" />
       <workItem from="1558452954415" duration="1118000" />
       <workItem from="1558454199996" duration="1339000" />
-      <workItem from="1558512555865" duration="10516000" />
-    </task>
-    <task id="LOCAL-00002" summary="creation image video">
-      <created>1558255335765</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1558255335765</updated>
-    </task>
-    <task id="LOCAL-00003" summary="creation image video">
-      <created>1558257170750</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1558257170750</updated>
+      <workItem from="1558512555865" duration="10883000" />
     </task>
     <task id="LOCAL-00004" summary="creation image video">
       <created>1558257333860</created>
@@ -638,11 +624,25 @@
       <option name="project" value="LOCAL" />
       <updated>1558535264140</updated>
     </task>
-    <option name="localTasksCounter" value="51" />
+    <task id="LOCAL-00051" summary="ajout deconnection">
+      <created>1558535866241</created>
+      <option name="number" value="00051" />
+      <option name="presentableId" value="LOCAL-00051" />
+      <option name="project" value="LOCAL" />
+      <updated>1558535866241</updated>
+    </task>
+    <task id="LOCAL-00052" summary="ajout deconnection">
+      <created>1558536063559</created>
+      <option name="number" value="00052" />
+      <option name="presentableId" value="LOCAL-00052" />
+      <option name="project" value="LOCAL" />
+      <updated>1558536063559</updated>
+    </task>
+    <option name="localTasksCounter" value="53" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="19286000" />
+    <option name="totallyTimeSpent" value="19653000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="2613" y="149" width="1563" height="1024" extended-state="0" />
@@ -795,8 +795,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/mqtt_paho/client.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="482">
-          <caret line="47" column="77" selection-start-line="47" selection-start-column="77" selection-end-line="47" selection-end-column="77" />
+        <state relative-caret-position="363">
+          <caret line="44" column="35" lean-forward="true" selection-start-line="44" selection-start-column="35" selection-end-line="44" selection-end-column="35" />
           <folding>
             <element signature="e#0#56#0" expanded="true" />
           </folding>
