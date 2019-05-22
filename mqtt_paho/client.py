@@ -8,7 +8,7 @@ def on_connect(client, userdata, flags, rc):
 
 
     # reception de tous les messages
-    client.subscribe("$SYS/#")
+    client.subscribe("tout/#")
     #client.sucribe("test_channel")
 
 
