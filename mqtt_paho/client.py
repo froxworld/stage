@@ -42,7 +42,7 @@ client.publish("heure", "{0}".format(temps))
 client.publish("heure/1", "{0}".format(temps))
 client.publish("heure/2", "{0}".format(temps))
 if id_camera == 0:
-    client.publish("camera1", "camera/{0}".format(chemin_1))
+    client.publish("camera", "camera/{0}".format(chemin_1))
 
 client.publish("photo", "{0}{1}".format(chemin_1, image1))
 
