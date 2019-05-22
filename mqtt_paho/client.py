@@ -13,6 +13,7 @@ def on_connect(client, userdata, flags, resutat_de_conection):
     # client.subscribe("$SYS/#")
     #client.sucribe("sensors/#")
     client.sucribe([("sensors/#", 0), ("sensors/temperature",2)])
+    # mosquitto_sub -h 10.42.0.1 -t sensors/#
 
 
 # The callback for when a PUBLISH message is received from the server.
