@@ -34,7 +34,7 @@ client.on_log = on_log  #  comme la methode on log ne retourne rien on enleve le
 
 client.connect(repartiteur)  # connection au repartiteur
 client.loop_start()  # debut de la boucle
-client.publish("heure", "premier test de message")
+client.publish("heure", "{}".format(temps))
 time.sleep(4)
 client.loop_stop()  # finb de la boucle
 client.disconnect()  # deconnection
