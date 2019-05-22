@@ -51,7 +51,8 @@ client.publish("heure/1", "{0}".format(temps))
 client.publish("heure/2", "{0}".format(temps))
 
 if id_camera == 0:
-    client.publish("camera", "{0}/camera/{1}.{2}".format(chemin,nom_image, Extension.jpg.name))
+    # pour les enum on peut faire
+    client.publish("camera", "{0}camera/{1}{2}.{3}".format(chemin,nom_image,compteur, Extension.jpg.name))
     compteur = compteur + 1
 
 client.publish("photo", "{0}/photo/{1}.{2}".format(chemin,nom_image, Extension.jpg))
