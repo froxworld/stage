@@ -3,7 +3,7 @@ import time # pour affichier notre heure
 
 # methode de login au raapartiteur (client, userdata, level, buf)
 def on_log(client, donnee, niveau, tampon):
-    print("login:"+ tampon)
+    print("Etat du client:" + tampon)
 
 #methode quand le client va se connecter
 def on_connect(client, donnee, drapeaux, resultat_de_connection):
