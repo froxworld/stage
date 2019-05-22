@@ -27,7 +27,7 @@ def on_connect(le_client, donnee, drapeaux, resultat_de_connection):
         print("probleme de connection code de retour =", resultat_de_connection)
 
 # methode au moment de la deconnection
-def on_disconect(le_client, donnee, drapeaux, resultat_de_connection):
+def on_disconect(le_client, donnee, drapeaux, resultat_de_connection = 0):
     print("Deconnection du client ave le code de retour ", resultat_de_connection)
 
 # derniere methode on_message quand le client a souscrit
