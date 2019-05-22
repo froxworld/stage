@@ -9,7 +9,7 @@ class Extension:
 
 id_client = '1'
 nom_image = "test"
-chemin = "/home/pi/francois/image/"
+chemin = "/home/pi/francois/"
 id_camera = 0
 compteur = 0
 
@@ -49,10 +49,10 @@ client.publish("date", "{0}".format(date))
 client.publish("heure/1", "{0}".format(temps))
 client.publish("heure/2", "{0}".format(temps))
 if id_camera == 0:
-    client.publish("camera", "camera/{0}/{1}.{2}".format(chemin,nom_image, Extension.jpg))
+    client.publish("camera", "{0}/camera/{1}.{2}".format(chemin,nom_image, Extension.jpg.value))
     compteur = compteur + 1
 
-client.publish("photo", "image/{0}/{1}.{2}".format(chemin,nom_image, Extension.jpg))
+client.publish("photo", "{0}/photo/{1}.{2}".format(chemin,nom_image, Extension.jpg))
 
 client.publish("video", "video")
 
