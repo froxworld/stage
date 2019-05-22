@@ -3,16 +3,16 @@ import paho.mqtt.client as mqtt
 
 # The callback for when the client receives a CONNACK response from the server.
 
-def on_connect(client, userdata, flags, rc):
+def on_connect(client, userdata, flags, resutat_de_conection):
     #
-    print("connection reussie  "+str(rc))
+    print("connection reussie  "+str(resutat_de_conection))
 
     # Subscribing in on_connect() means that if we lose the connection and
 
     # reception de tous les messages
     # client.subscribe("$SYS/#")
     #client.sucribe("sensors/#")
-    client.sucribe('sensors/#')
+    client.sucribe([("sensors/#", 0), ("sensors/temperature",2)])
 
 
 # The callback for when a PUBLISH message is received from the server.
