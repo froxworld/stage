@@ -1,6 +1,6 @@
 import paho.mqtt.client as mqtt  # import du client mqtt
-from time import gmtime, strftime, time# pour affichier notre heure
-
+from time import gmtime, strftime  # pour affichier notre heure
+import time
 class Extension:
     jpg = 1
     png = 2
