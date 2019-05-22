@@ -12,7 +12,7 @@ def on_connect(client, userdata, flags, rc):
     # reception de tous les messages
     # client.subscribe("$SYS/#")
     #client.sucribe("sensors/#")
-    client.sucribe('-h 10.42.0.1 -t sensors/#')
+    client.sucribe('sensors/#')
 
 
 # The callback for when a PUBLISH message is received from the server.
