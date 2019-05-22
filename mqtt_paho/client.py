@@ -1,7 +1,8 @@
 import paho.mqtt.client as mqtt  # import du client mqtt
 from time import gmtime, strftime  # pour affichier notre heure
+from enum import Enum
 import time
-class Extension:
+class Extension(Enum):
     jpg = 1
     png = 2
     svg = 3
@@ -49,7 +50,7 @@ client.publish("date", "{0}".format(date))
 client.publish("heure/1", "{0}".format(temps))
 client.publish("heure/2", "{0}".format(temps))
 if id_camera == 0:
-    client.publish("camera", "{0}/camera/{1}.{2}".format(chemin,nom_image, Extension.jpg.value))
+    client.publish("camera", "{0}/camera/{1}.{2}".format(chemin,nom_image, Extension.jpg.name))
     compteur = compteur + 1
 
 client.publish("photo", "{0}/photo/{1}.{2}".format(chemin,nom_image, Extension.jpg))
