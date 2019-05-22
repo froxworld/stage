@@ -49,6 +49,7 @@ date = strftime("%a, %d %b %Y %H:%M:%S +0000", gmtime())
 client.publish("date", "{0}".format(date))
 client.publish("heure/1", "{0}".format(temps))
 client.publish("heure/2", "{0}".format(temps))
+
 if id_camera == 0:
     client.publish("camera", "{0}/camera/{1}.{2}".format(chemin,nom_image, Extension.jpg.name))
     compteur = compteur + 1
