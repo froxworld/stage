@@ -2,7 +2,8 @@ import paho.mqtt.client as mqtt  # import du client mqtt
 import time  # pour affichier notre heure
 
 id_client = '1'
-
+image1 = "test1.jpg"
+chemin_1 = "/home/pi/francois/images/"
 
 # methode de login au raapartiteur (client, userdata, level, buf)
 def on_log(client, donnee, niveau, tampon):
@@ -25,7 +26,6 @@ repartiteur = "10.42.0.1"  # adresse du repartiteur (broker)
 client = mqtt.Client(id_client)  # creation de l'instance d un client
 print("connection au repartiteur (broker) ", repartiteur)
 temps = time.clock()
-print (time.clock())
 
 client.on_connect = on_connect  # bizarre en python un appel de methode sans () ?
 client.on_disconnect
@@ -34,7 +34,8 @@ client.on_log = on_log  #  comme la methode on log ne retourne rien on enleve le
 
 client.connect(repartiteur)  # connection au repartiteur
 client.loop_start()  # debut de la boucle
-client.publish("heure", "{}".format(temps))
+client.publish("heure", "{0}".format(temps))
+client.publish("photo", "{0}{1}".format(chemin_1, image1))
 time.sleep(4)
 client.loop_stop()  # finb de la boucle
 client.disconnect()  # deconnection
