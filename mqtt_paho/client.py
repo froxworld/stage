@@ -28,8 +28,8 @@ client.on_log = on_log
 client.connect(repartiteur)  # connection au repartiteur
 time.sleep(4)
 client.disconnect()  # deconnection
-temps = abs(temps - time.clock())*100
-print('le client {0} est deconecter et est rester {1}'.format(client, temps))
+temps_total = abs(temps - time.clock())*100
+print('le client {0} est deconecter et est rester {1}'.format(client, temps_total))
 
 '''
 # The callback for when the client receives a CONNACK response from the server.
