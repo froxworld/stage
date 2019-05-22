@@ -4,11 +4,12 @@ import time # pour affichier notre heure
 repartiteur = "10.42.0.1"  # adresse du repartiteur (broker)
 client = mqtt.Client("python1")  # creation de l'instance d un client
 print("connection au broker ", repartiteur)
-print (time)
+temps = time.clock()
+print (time.clock())
 client.connect(repartiteur)  # connection au repartiteur
 time.sleep(4)
 client.disconnect() # deconnection
-print("le client %s est deconecter " % client)
+print("le client %s est deconecter et est rester %s" % client % temps)
 
 
 '''
