@@ -8,8 +8,8 @@ def on_connect(client, userdata, flags, rc):
 
 
     # reception de tous les messages
-    #client.subscribe("$SYS/#")
-    client.sucribe("test_channel")
+    client.subscribe("$SYS/#")
+    #client.sucribe("test_channel")
 
 
 # The callback for when a PUBLISH message is received from the server.
