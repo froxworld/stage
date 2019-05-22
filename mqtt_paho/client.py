@@ -44,8 +44,8 @@ client.connect(repartiteur)  # connection au repartiteur
 client.loop_start()  # debut de la boucle
 
 #  publication de donnee "topic", "contenu du topic "
-temps = strftime("%a, %d %b %Y %H:%M:%S +0000", gmtime())
-client.publish("heure", "{0}".format(temps))
+date = strftime("%a, %d %b %Y %H:%M:%S +0000", gmtime())
+client.publish("date", "{0}".format(date))
 client.publish("heure/1", "{0}".format(temps))
 client.publish("heure/2", "{0}".format(temps))
 if id_camera == 0:
