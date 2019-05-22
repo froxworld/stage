@@ -30,6 +30,12 @@ def on_connect(le_client, donnee, drapeaux, resultat_de_connection):
 def on_disconect(le_client, donnee, drapeaux, resultat_de_connection):
     print("Deconnection du client ave le code de retour ", resultat_de_connection)
 
+# derniere methode on_message quand le client a souscrit
+def on_message(le_client, donnee, message):
+    sujet = message.topic
+    decodage = str(message.plaload.decode("utf-8", "ignore"))
+    print(decodage)
+
 
 repartiteur = "10.42.0.1"  # adresse du repartiteur (broker)
 client = mqtt.Client(id_client)  # creation de l'instance d un client
@@ -39,7 +45,7 @@ temps = time.clock()
 client.on_connect = on_connect  # bizarre en python un appel de methode sans () ?
 client.on_disconnect
 client.on_log = on_log  #  comme la methode on log ne retourne rien on enleve les () a premiere vue
-
+client.on_message # quand on fait un sucribe la ppel de la methode on_message est apellee
 
 client.connect(repartiteur)  # connection au repartiteur
 client.loop_start()  # debut de la boucle
