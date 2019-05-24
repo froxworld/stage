@@ -2,6 +2,8 @@ import paho.mqtt.client as mqtt  # import du client mqtt
 from time import gmtime, strftime  # pour affichier notre heure
 from enum import Enum
 import time
+
+
 class Extension(Enum):
     jpg = 1
     png = 2
@@ -13,6 +15,7 @@ nom_image = "test"
 chemin = "/home/pi/francois/"
 id_camera = 0
 compteur = 0
+
 
 # methode de login au raapartiteur (client, userdata, level, buf)
 def on_log(client, donnee, niveau, tampon):
@@ -26,9 +29,11 @@ def on_connect(le_client, donnee, drapeaux, resultat_de_connection):
     else:
         print("probleme de connection code de retour =", resultat_de_connection)
 
+
 # methode au moment de la deconnection
-def on_disconect(le_client, donnee, drapeaux, resultat_de_connection = 0):
+def on_disconect(le_client, donnee, drapeaux, resultat_de_connection=0):
     print("Deconnection du client avec le code de retour ", resultat_de_connection)
+
 
 # derniere methode on_message quand le client a souscrit
 def on_message(le_client, donnee, message):
@@ -43,7 +48,7 @@ temps = time.clock()
 
 client.on_connect = on_connect  # bizarre en python un appel de methode sans () ?
 client.on_disconnect = on_disconect
-client.on_log = on_log  #  comme la methode on log ne retourne rien on enleve les () a premiere vue
+client.on_log = on_log  # comme la methode on log ne retourne rien on enleve les () a premiere vue
 client.on_message = on_message  # quand on fait un sucribe la ppel de la methode on_message est apellee
 
 client.connect(repartiteur)  # connection au repartiteur
@@ -57,11 +62,10 @@ client.publish("heure/2", "{0}".format(temps))
 
 if id_camera == 0:
     # pour les enum on peut faire
-    client.publish("camera", "{0}camera/{1}{2}.{3}".format(chemin,nom_image,compteur, Extension.jpg.name))
+    client.publish("camera", "{0}camera/{1}{2}.{3}".format(chemin, nom_image, compteur, Extension.jpg.name))
     compteur = compteur + 1
 
-client.publish("photo", "{0}/photo/{1}.{2}".format(chemin,nom_image, Extension.jpg))
-
+client.publish("photo", "{0}/photo/{1}.{2}".format(chemin, nom_image, Extension.jpg))
 client.publish("video", "video")
 
 # reception d un topic on s'abonne
