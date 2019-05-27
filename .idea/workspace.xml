@@ -2,7 +2,17 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f4254f7a-6e1b-453f-8c28-fa5a8be4b4e8" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/mqtt_paho/client.py" beforeDir="false" afterPath="$PROJECT_DIR$/mqtt_paho/client.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/3d/piece.blend" beforeDir="false" afterPath="$PROJECT_DIR$/3d/piece.blend" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/3d/piece.blend1" beforeDir="false" afterPath="$PROJECT_DIR$/3d/piece.blend1" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UnityStage/Library/CurrentLayout.dwlt" beforeDir="false" afterPath="$PROJECT_DIR$/UnityStage/Library/CurrentLayout.dwlt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UnityStage/Library/EditorInstance.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/UnityStage/Library/StateCache/Hierarchy/c731a8-mainStage.json" beforeDir="false" afterPath="$PROJECT_DIR$/UnityStage/Library/StateCache/Hierarchy/c731a8-mainStage.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UnityStage/Library/StateCache/SceneView/51a61d-mainStage.json" beforeDir="false" afterPath="$PROJECT_DIR$/UnityStage/Library/StateCache/SceneView/51a61d-mainStage.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UnityStage/Library/assetDatabase3" beforeDir="false" afterPath="$PROJECT_DIR$/UnityStage/Library/assetDatabase3" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UnityStage/Temp/InitCodeMarker" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/UnityStage/Temp/ProcessJobs/e9a6970f79cd12d8b075e7d72f1b07cb.bakert" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/UnityStage/Temp/UnityLockfile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/UnityStage/Temp/__Backupscenes/0.backup" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -24,7 +34,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/python/souris.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="135">
+            <state relative-caret-position="120">
               <caret line="9" column="15" selection-start-line="9" selection-start-column="15" selection-end-line="9" selection-end-column="15" />
               <folding>
                 <element signature="e#0#10#0" expanded="true" />
@@ -36,8 +46,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/mqtt_paho/client.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-78">
-              <caret line="51" column="30" selection-start-line="51" selection-start-column="30" selection-end-line="51" selection-end-column="30" />
+            <state relative-caret-position="45">
+              <caret line="53" column="56" selection-start-line="53" selection-start-column="56" selection-end-line="53" selection-end-column="56" />
               <folding>
                 <element signature="e#0#56#0" expanded="true" />
               </folding>
@@ -81,8 +91,8 @@
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="2613" />
-    <option name="y" value="149" />
+    <option name="x" value="614" />
+    <option name="y" value="171" />
     <option name="width" value="1563" />
     <option name="height" value="1024" />
   </component>
@@ -115,7 +125,7 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$/image" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
-    <property name="settings.editor.selected.configurable" value="settings.github" />
+    <property name="settings.editor.selected.configurable" value="configurable.group.project" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -163,6 +173,9 @@
       <module name="stage" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
       <option name="SDK_HOME" value="" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/mqtt_paho" />
       <option name="IS_MODULE_SDK" value="true" />
@@ -293,6 +306,7 @@
       <workItem from="1558452954415" duration="1118000" />
       <workItem from="1558454199996" duration="1339000" />
       <workItem from="1558512555865" duration="11491000" />
+      <workItem from="1558942985301" duration="908000" />
     </task>
     <task id="LOCAL-00007" summary="ajout de paho">
       <created>1558454748535</created>
@@ -641,13 +655,12 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="20261000" />
+    <option name="totallyTimeSpent" value="21169000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="2613" y="149" width="1563" height="1024" extended-state="0" />
-    <editor active="true" />
+    <frame x="614" y="171" width="1563" height="1024" extended-state="0" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.3221565" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.32610124" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -768,13 +781,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/python/souris.py">
+    <entry file="file://$USER_HOME$/anaconda3/envs/stage/lib/python2.7/site-packages/paho/mqtt/client.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
-          <caret line="9" column="15" selection-start-line="9" selection-start-column="15" selection-end-line="9" selection-end-column="15" />
-          <folding>
-            <element signature="e#0#10#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="191">
+          <caret line="1702" column="24" lean-forward="true" selection-start-line="1702" selection-start-column="24" selection-end-line="1702" selection-end-column="24" />
         </state>
       </provider>
     </entry>
@@ -785,17 +795,20 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/anaconda3/envs/stage/lib/python2.7/site-packages/paho/mqtt/client.py">
+    <entry file="file://$PROJECT_DIR$/python/souris.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="191">
-          <caret line="1702" column="24" lean-forward="true" selection-start-line="1702" selection-start-column="24" selection-end-line="1702" selection-end-column="24" />
+        <state relative-caret-position="120">
+          <caret line="9" column="15" selection-start-line="9" selection-start-column="15" selection-end-line="9" selection-end-column="15" />
+          <folding>
+            <element signature="e#0#10#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/mqtt_paho/client.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-78">
-          <caret line="51" column="30" selection-start-line="51" selection-start-column="30" selection-end-line="51" selection-end-column="30" />
+        <state relative-caret-position="45">
+          <caret line="53" column="56" selection-start-line="53" selection-start-column="56" selection-end-line="53" selection-end-column="56" />
           <folding>
             <element signature="e#0#56#0" expanded="true" />
           </folding>

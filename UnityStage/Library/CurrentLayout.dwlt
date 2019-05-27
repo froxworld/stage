@@ -14,14 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_PixelRect:
     serializedVersion: 2
-    x: 41
-    y: 45
+    x: 259
+    y: 66
     width: 1879
     height: 1155
   m_ShowMode: 4
   m_Title: 
   m_RootView: {fileID: 6}
-  m_MinSize: {x: 950, y: 300}
+  m_MinSize: {x: 950, y: 548}
   m_MaxSize: {x: 10000, y: 10000}
 --- !u!114 &2
 MonoBehaviour:
@@ -74,7 +74,7 @@ MonoBehaviour:
   m_MinSize: {x: 683, y: 498}
   m_MaxSize: {x: 12008, y: 14048}
   vertical: 1
-  controlID: 221
+  controlID: 331
 --- !u!114 &4
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -150,7 +150,7 @@ MonoBehaviour:
     y: 0
     width: 1879
     height: 1155
-  m_MinSize: {x: 950, y: 300}
+  m_MinSize: {x: 950, y: 548}
   m_MaxSize: {x: 10000, y: 10000}
 --- !u!114 &7
 MonoBehaviour:
@@ -199,7 +199,7 @@ MonoBehaviour:
   m_MinSize: {x: 683, y: 224}
   m_MaxSize: {x: 12008, y: 4024}
   vertical: 0
-  controlID: 222
+  controlID: 332
 --- !u!114 &9
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -374,31 +374,31 @@ MonoBehaviour:
     m_Tooltip: 
   m_Pos:
     serializedVersion: 2
-    x: 1439
-    y: 75
+    x: 1400
+    y: 22
     width: 200
-    height: 742
+    height: 738
   m_PersistentViewDataDictionary: {fileID: 0}
   m_SceneHierarchy:
     m_TreeViewState:
       scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: dc120000
+      m_SelectedIDs: e8110000
       m_LastClickedID: 0
-      m_ExpandedIDs: 42a8ffff0cbaffffccc2ffff9cd8ffff34e2ffff42f6ffffd6fbfffff6400000
+      m_ExpandedIDs: d6fbffff
       m_RenameOverlay:
         m_UserAcceptedRename: 0
-        m_Name: camera
-        m_OriginalName: camera
+        m_Name: 
+        m_OriginalName: 
         m_EditFieldRect:
           serializedVersion: 2
           x: 0
           y: 0
           width: 0
           height: 0
-        m_UserData: -10230
+        m_UserData: 0
         m_IsWaitingForDelay: 0
         m_IsRenaming: 0
-        m_OriginalEventType: 0
+        m_OriginalEventType: 11
         m_IsRenamingFilename: 0
         m_ClientGUIView: {fileID: 5}
       m_SearchString: 
@@ -429,10 +429,10 @@ MonoBehaviour:
     m_Tooltip: 
   m_Pos:
     serializedVersion: 2
-    x: 1643
-    y: 75
+    x: 1604
+    y: 22
     width: 275
-    height: 742
+    height: 738
   m_PersistentViewDataDictionary: {fileID: 0}
   m_ObjectsLockedBeforeSerialization: []
   m_InstanceIDsLockedBeforeSerialization: 
@@ -464,10 +464,10 @@ MonoBehaviour:
     m_Tooltip: 
   m_Pos:
     serializedVersion: 2
-    x: 41
-    y: 837
+    x: 0
+    y: 784
     width: 1879
-    height: 323
+    height: 319
   m_PersistentViewDataDictionary: {fileID: 0}
   m_SearchFilter:
     m_NameFilter: 
@@ -487,7 +487,7 @@ MonoBehaviour:
   m_LastFolders:
   - Assets
   m_LastFoldersGridSize: 96
-  m_LastProjectPath: /Users/francoisauxietre/Satge
+  m_LastProjectPath: /Pycharm/stage/UnityStage
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
@@ -549,7 +549,7 @@ MonoBehaviour:
   m_ListAreaState:
     m_SelectedInstanceIDs: 
     m_LastClickedInstanceID: 0
-    m_HadKeyboardFocusLastEvent: 1
+    m_HadKeyboardFocusLastEvent: 0
     m_ExpandedInstanceIDs: ca2b0000482500000000000024310000d44200000c27000010740100d48b00001c2e0000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
@@ -597,8 +597,8 @@ MonoBehaviour:
     m_Tooltip: 
   m_Pos:
     serializedVersion: 2
-    x: 41
-    y: 75
+    x: 259
+    y: 96
     width: 1396
     height: 742
   m_PersistentViewDataDictionary: {fileID: 0}
@@ -608,9 +608,9 @@ MonoBehaviour:
   m_isRotationLocked: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: 1.5979993, y: 299.70166, z: 2.2368202}
+    m_Target: {x: 1.2269056, y: 300.83154, z: 1.9077187}
     speed: 2
-    m_Value: {x: 1.5979993, y: 299.70166, z: 2.2368202}
+    m_Value: {x: 1.2269056, y: 300.83154, z: 1.9077187}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -630,21 +630,21 @@ MonoBehaviour:
       speed: 2
       m_Value: 0
     yGrid:
-      m_Target: 0
+      m_Target: 1
       speed: 2
-      m_Value: 0
+      m_Value: 1
     zGrid:
       m_Target: 0
       speed: 2
       m_Value: 0
   m_Rotation:
-    m_Target: {x: 0.00071137736, y: 0.99920136, z: 0.034176394, w: -0.020684807}
+    m_Target: {x: -0.21413487, y: 0.43022212, z: 0.10582905, w: 0.87054837}
     speed: 2
-    m_Value: {x: 0.0007113775, y: 0.99920154, z: 0.0341764, w: -0.02068481}
+    m_Value: {x: -0.21413498, y: 0.43022233, z: 0.105829105, w: 0.8705488}
   m_Size:
-    m_Target: 8.81281
+    m_Target: 6.182348
     speed: 2
-    m_Value: 8.81281
+    m_Value: 6.182348
   m_Ortho:
     m_Target: 1
     speed: 2
