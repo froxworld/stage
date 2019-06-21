@@ -1,0 +1,986 @@
+/* MyApsIsticLuaLib
+ * Copyright © 2016 François Bodin
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
+ */
+#include <stdlib.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include <string.h>
+#include <unistd.h>
+#include <time.h>
+#include <ctype.h>
+#include <assert.h>
+#include <pthread.h>
+
+#include <curl/curl.h>
+#include <curl/easy.h>
+
+#include <lua.h>
+#include <lualib.h>
+#include <lauxlib.h>
+
+#include "common.h"
+#include "network.h"
+#include "jsmn.h"
+
+/*Let's have a buffer to build request */
+char requestBuffer[MAX_PARAM_REQUEST];
+
+/*We have a session token */
+char *sessionToken = NULL;
+char *sessionEmail = NULL;
+char *sessionKeyid = NULL;
+
+/*Guard that stops any function if connection isn't initialized.*/
+bool connected_to_server = false;
+
+/*guard to know if the thread started*/
+bool recv_ready = false;
+
+struct CurlData {
+  /* a buffer to handle received data */
+  char *memory;
+  /* size in bytes */
+  size_t size;
+};
+
+static int jsoneq(const char *json, jsmntok_t *tok, const char *s) {
+  if (tok->type == JSMN_STRING && (int) strlen(s) == tok->end - tok->start &&
+      strncmp(json + tok->start, s, tok->end - tok->start) == 0) {
+    return 0;
+  }
+  return -1;
+}
+
+static size_t write_curl_to_buffer(void* data, size_t size, size_t nmemb, void* userp){
+  size_t realsize = size * nmemb;
+  struct CurlData *mem = (struct CurlData *)userp;
+  mem->memory = realloc(mem->memory, mem->size + realsize + 1);
+  if(mem->memory == NULL) {
+    /* out of memory! */ 
+    printf("not enough memory (realloc returned NULL)\n");
+    return 0;
+  } 
+  memcpy(&(mem->memory[mem->size]), data, realsize);
+  mem->size += realsize;
+  mem->memory[mem->size] = 0;
+  return realsize;
+}
+
+
+//connect to the serveur and check the account
+int httpToServer(struct CurlData *serv_data,const char *script, const char *fields){
+  CURL *curl = NULL;
+  CURLcode res = CURLE_OK;  
+  curl = curl_easy_init();
+  if(curl) {
+    char url[MAX_URL_SIZE];
+    strncpy(url,SERVEUR_ADDR,MAX_URL_SIZE);
+    if (script) strncat(url,script,MAX_URL_SIZE);
+    curl_easy_setopt(curl, CURLOPT_URL,url);
+    curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
+    curl_easy_setopt(curl, CURLOPT_VERBOSE, 0L);
+    curl_easy_setopt(curl, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
+    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_curl_to_buffer);
+    curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *) serv_data);
+    curl_easy_setopt(curl, CURLOPT_POST, 1);
+    if (fields) curl_easy_setopt(curl, CURLOPT_POSTFIELDS,fields);
+
+    res = curl_easy_perform(curl);
+    /* Check for errors */ 
+    if(res != CURLE_OK){
+      fprintf(stderr, "curl_easy_perform() failed: %s\n",curl_easy_strerror(res));
+      return 0;
+    }
+    curl_easy_cleanup(curl);
+    return 1;
+  }
+  return 0;
+}
+
+int httpFromServer(){
+  return 0;
+}
+
+
+/* get a duplicated string - i.e. need to be freed */
+char *getAJsonField(const char *fieldname,struct CurlData *serv_data){
+    jsmn_parser p;
+    jsmntok_t t[MAX_JSON_TOKEN]; 
+    jsmn_init(&p);
+    int r = jsmn_parse(&p, serv_data->memory, serv_data->size, t, sizeof(t)/sizeof(t[0]));
+    if (r < 0) {
+      fprintf(stderr,"Failed to parse JSON: %d\n", r);
+      return NULL;
+    }
+    if (r < 1 || t[0].type != JSMN_OBJECT) {
+      fprintf(stderr, "Object expected\n");
+      return NULL;
+    }
+
+    /* Loop over all keys of the root object */
+    for (int i = 1; i < r; i++) {
+      if (jsoneq(serv_data->memory, &t[i],fieldname) == 0) {
+	char *val = NULL;
+	int len = t[i+1].end-t[i+1].start;
+	val= strndup(serv_data->memory + t[i+1].start,len+1);
+	val[len] = '\0';
+	return val;
+      }
+    }  
+    return NULL;
+}
+
+
+
+int myapsisticlualib_connect(lua_State *L){
+  if(connected_to_server) return 0;
+  const char *email  = NULL;
+  const char *passwd = NULL;
+  email  = luaL_checkstring(L,1);
+  if (!email){
+    luaL_argerror (L,1,"Expecting an email as first parameter");
+    return 0;
+  }
+  passwd = luaL_checkstring(L,2);
+  if (!passwd) {
+    luaL_argerror (L,2,"Expecting a password as second parameter");  
+    return 0;
+  }
+
+  //init curl
+  curl_global_init(CURL_GLOBAL_ALL);
+  //placeholder for the response
+  struct CurlData serv_data;
+  serv_data.memory = malloc(1);  
+  serv_data.size = 0; 
+  sprintf(requestBuffer,"usermail=%s&mdp=%s",email,passwd);
+  if (httpToServer(&serv_data, LOGIN_SCRIPT,requestBuffer)){
+    connected_to_server = true;
+    printf("Connecting to server\n");
+    //fprintf(stderr, "serv_data.size=%d\n",(int) serv_data.size);
+    //fprintf(stderr, "serv_data.memory=%s\n",serv_data.memory);
+    char *val = NULL;
+    if ((val = getAJsonField("flag", &serv_data))){
+      if (val[0] != 'S'){
+	fprintf(stderr,"Connection failed\n");
+	free(serv_data.memory);
+	free(val);
+	return 0;
+      }      
+    }
+    if (email){
+      setEmail(email, strlen(email));      
+    }
+    if ((val = getAJsonField("keyid",&serv_data))){
+      setKeyid(val, strlen(val));
+      if (VERBOSE) printf("Keyid is %s\n",val);
+      free(val);
+    }
+    if ((val = getAJsonField("token",&serv_data))){
+      setToken(val, strlen(val));      
+      free(val);
+    }
+  }
+  free(serv_data.memory);
+  return 0;
+}
+  
+
+int myapsisticlualib_disconnect(lua_State *L){
+  if(!connected_to_server) return 0;
+  printf("Disconnecting from server\n");
+  resetToken();
+  connected_to_server = false;
+  return 0;
+}
+
+void setToken(const char *tok, int n){
+  if (!tok) return;
+  sessionToken = strndup(tok,n+1);
+  sessionToken[n] = '\0';
+  if (VERBOSE) printf("Token set: %s\n",sessionToken); 
+}
+
+void resetToken(){
+  if (!sessionToken) return;
+  free(sessionToken);
+  sessionToken = NULL;
+}
+
+char *getToken(){
+  return sessionToken;
+}
+
+void setKeyid(const char *tok, int n){
+  if (!tok) return;
+  sessionKeyid = strndup(tok,n+1);
+  sessionKeyid[n] = '\0';
+  if (VERBOSE) printf("Keyid set: %s\n",sessionKeyid); 
+}
+
+void resetKeyid(){
+  if (!sessionKeyid) return;
+  free(sessionKeyid);
+  sessionKeyid = NULL;
+}
+
+int getKeyid(lua_State *L){
+  if (sessionKeyid){
+    lua_pushstring(L,sessionKeyid);
+    return 1;
+  } else {
+    return 0;
+  }
+}
+
+
+void setEmail(const char *tok, int n){
+  if (!tok) return;
+  sessionEmail = strndup(tok,n+1);
+  sessionEmail[n] = '\0';
+  if (VERBOSE) printf("Email set: %s\n",sessionEmail); 
+}
+
+void resetEmail(){
+  if (!sessionEmail) return;
+  free(sessionEmail);
+  sessionEmail = NULL;
+}
+
+char *getEmail(){
+  return sessionEmail;
+}
+
+int addUser(lua_State *L){
+  const char *firstname  = NULL;
+  const char *lastname = NULL;
+  const char *email  = NULL;
+  const char *passwd = NULL;
+  const char *code= NULL;
+
+  //this is admin, do not need to be connected
+ firstname  = luaL_checkstring(L,1);
+ if (!firstname){
+   luaL_argerror (L,1,"Expecting the first name  as first parameter");
+   return 0;
+ }
+ lastname = luaL_checkstring(L,2);
+ if (!lastname) {
+   luaL_argerror (L,2,"Expecting the last name  as second parameter");
+   return 0;
+ }
+ 
+ email  = luaL_checkstring(L,3);
+ if (!email){
+   luaL_argerror (L,3,"Expecting an email as third parameter");
+   return 0;
+ }
+  passwd = luaL_checkstring(L,4);
+  if (!passwd) {
+    luaL_argerror (L,4,"Expecting a password as fourth parameter");
+    return 0;
+  }
+  code = luaL_checkstring(L,5);
+  if (!code) {
+    luaL_argerror (L,5,"Expecting admin code as fifth parameter");
+    return 0;
+  }
+
+  curl_global_init(CURL_GLOBAL_ALL);
+  struct CurlData serv_data;
+  serv_data.memory = malloc(1);
+  serv_data.size = 0;
+  sprintf(requestBuffer,"firstname=%s&lastname=%s&usermail=%s&mdp=%s&token=%s&code=%s",firstname,lastname,email,passwd,"notused",code);
+  if (httpToServer(&serv_data, ADDUSER_SCRIPT,requestBuffer)){    
+    char *val = NULL;
+    if (VERBOSE) printf("Adding user %s %s %s\n",firstname,lastname,email);
+    if ((val = getAJsonField("flag", &serv_data))){
+      if (val[0] != 'S'){
+        fprintf(stderr,"adding user failed\n");
+	free(serv_data.memory);
+        free(val);
+        return 0;
+      }
+    }
+    if ((val = getAJsonField("name",&serv_data))){
+      if (VERBOSE) printf("user %s has been added\n",val);
+      free(val);
+    }
+  } else {
+    fprintf(stderr,"adding user request failed\n");
+  }
+  free(serv_data.memory);
+  return 0;
+}
+
+int rmUser(lua_State *L){
+  const char *email  = NULL;
+  const char *code= NULL;
+
+  //this is admin, do not need to be connected
+ email  = luaL_checkstring(L,1);
+ if (!email){
+   luaL_argerror (L,1,"Expecting an email as first parameter");
+   return 0;
+ }
+  code = luaL_checkstring(L,2);
+  if (!code) {
+    luaL_argerror (L,2,"Expecting admin code as second parameter");
+    return 0;
+  }
+
+  curl_global_init(CURL_GLOBAL_ALL);
+  struct CurlData serv_data;
+  serv_data.memory = malloc(1);
+  serv_data.size = 0;
+  sprintf(requestBuffer,"usermail=%s&code=%s",email,code);
+  if (httpToServer(&serv_data, RMUSER_SCRIPT,requestBuffer)){    
+    char *val = NULL;
+    if (VERBOSE) printf("Removing user %s\n",email);
+    if ((val = getAJsonField("flag", &serv_data))){
+      if (val[0] != 'S'){
+        fprintf(stderr,"removing user failed\n");
+	free(serv_data.memory);
+        free(val);
+        return 0;
+      } else {
+	fprintf(stderr,"user %s removed\n",email);
+      }
+    }
+  } else {
+    fprintf(stderr,"removing user request failed\n");
+  }
+  free(serv_data.memory);
+  return 0;
+}
+
+
+//need factoring with above
+int chgPasswd(lua_State *L){
+  const char *firstname  = NULL;
+  const char *lastname = NULL;
+  const char *email  = NULL;
+  const char *passwd = NULL;
+  const char *code= NULL;
+
+  //this is admin, do not need to be connected
+ firstname  = luaL_checkstring(L,1);
+ if (!firstname){
+   luaL_argerror (L,1,"Expecting the first name  as first parameter");
+   return 0;
+ }
+ lastname = luaL_checkstring(L,2);
+ if (!lastname) {
+   luaL_argerror (L,2,"Expecting the last name  as second parameter");
+   return 0;
+ }
+ 
+ email  = luaL_checkstring(L,3);
+ if (!email){
+   luaL_argerror (L,3,"Expecting an email as third parameter");
+   return 0;
+ }
+  passwd = luaL_checkstring(L,4);
+  if (!passwd) {
+    luaL_argerror (L,4,"Expecting a password as fourth parameter");
+    return 0;
+  }
+  code = luaL_checkstring(L,5);
+  if (!code) {
+    luaL_argerror (L,5,"Expecting admin code as fifth parameter");
+    return 0;
+  }
+  curl_global_init(CURL_GLOBAL_ALL);
+  struct CurlData serv_data;
+  serv_data.memory = malloc(1);
+  serv_data.size = 0;
+  sprintf(requestBuffer,"firstname=%s&lastname=%s&usermail=%s&mdp=%s&token=%s&code=%s",firstname,lastname,email,passwd,"notused",code);
+  if (httpToServer(&serv_data, CHGPASSWD_SCRIPT,requestBuffer)){    
+    char *val = NULL;
+    if (VERBOSE || 1) printf("Changing passwd for user %s %s %s %s\n",firstname,lastname,email,getAJsonField("token", &serv_data));
+    if ((val = getAJsonField("flag", &serv_data))){
+      if (val[0] != 'S'){
+        fprintf(stderr,"changing passwd failed\n");
+	free(serv_data.memory);
+        free(val);
+        return 0;
+      }
+    }
+    if ((val = getAJsonField("name",&serv_data))){
+      if (VERBOSE) printf("changing passwd for %s done\n",val);
+      free(val);
+    }
+  } else {
+    fprintf(stderr,"changing passwd request failed\n");
+  }
+  free(serv_data.memory);
+  return 0;
+}
+
+int addOutput(lua_State *L){
+  if(!connected_to_server) return 0;
+  const char *output  = NULL;
+  const char *content  = NULL;
+
+  if (VERBOSE) printf("Calling addOutput\n");
+  if (!connected_to_server){
+    fprintf(stderr,"You are not connect to the server/n use the connect() function\n");
+    return 0;
+  }
+  output  = luaL_checkstring(L,1);
+  if (!output){
+    luaL_argerror (L,1,"Expecting a filename as first parameter");
+    return 0;
+  }
+  content  = luaL_checkstring(L,2);
+  if (!content){
+    luaL_argerror (L,2,"Expecting a file content(base64) as second parameter");
+   return 0;
+  }
+
+  curl_global_init(CURL_GLOBAL_ALL);
+  struct CurlData serv_data;
+  serv_data.memory = malloc(1);
+  serv_data.size = 0;
+  CURL * curl = curl_easy_init();
+  char *encoded_content = curl_easy_escape(curl ,content ,strlen(content));
+  sprintf(requestBuffer,"output=%s&email=%s&token=%s&content=%s",output,getEmail(),getToken(),encoded_content);
+  curl_free(encoded_content);
+  if (httpToServer(&serv_data, OUTPUT_SCRIPT,requestBuffer)){    
+   char *val = NULL;
+   if ((val = getAJsonField("flag", &serv_data))){
+     if (val[0] != 'S'){
+       fprintf(stderr,"adding output failed\n");
+       free(serv_data.memory);
+       free(val);
+       return 0;
+     }
+   }
+   if ((val = getAJsonField("name",&serv_data))){
+     if (VERBOSE) printf("output %s has been added\n",val);
+     free(val);
+   }
+   if ((val = getAJsonField("keyid",&serv_data))){
+     if (VERBOSE) printf("keyid is %s\n",val);
+     free(val);
+   }
+ } else {
+   fprintf(stderr,"adding output request failed\n");
+ }
+ free(serv_data.memory);
+ return 0;
+}
+
+
+
+int getFile(lua_State *L){
+  if(!connected_to_server) return 0;
+  const char *filename  = NULL;
+
+  if (VERBOSE) printf("Calling getFilename\n");
+  if (!connected_to_server){
+    fprintf(stderr,"You are not connect to the server/n use the connect() function\n");
+    return 0;
+  }
+ filename  = luaL_checkstring(L,1);
+ if (!filename){
+   luaL_argerror (L,1,"Expecting a filename as first parameter");
+   return 0;
+ }
+
+ curl_global_init(CURL_GLOBAL_ALL);
+ struct CurlData serv_data;
+ serv_data.memory = malloc(1);
+ serv_data.size = 0;
+ sprintf(requestBuffer,"filename=%s&email=%s&token=%s",filename,getEmail(),getToken());
+ if (httpToServer(&serv_data, GETFILE_SCRIPT,requestBuffer)){    
+   char *val = NULL;
+   if ((val = getAJsonField("flag", &serv_data))){
+     if (val[0] != 'S'){
+       fprintf(stderr,"getting file failed\n");
+       free(serv_data.memory);
+       free(val);
+       return 0;
+     }
+   }
+   if ((val = getAJsonField("keyid",&serv_data))){
+     if (VERBOSE) printf("keyid is %s\n",val);
+     free(val);
+   }
+   if ((val = getAJsonField("content",&serv_data))){
+     char *decoded = NULL;
+     decoded = val; //to be decoded later
+     if (VERBOSE) printf("filename %s has been loaded\n",filename);
+     lua_pushstring(L,decoded);
+     free(val);
+     free(serv_data.memory);
+     return 1;
+   }
+ } else {
+   fprintf(stderr,"geting a file request failed\n");
+ }
+ free(serv_data.memory);
+ return 0;
+}
+
+int putAFile(lua_State *L){
+  const char *filename  = NULL;
+  const char *content   = NULL;
+  filename  = luaL_checkstring(L,1);
+  if (!filename){
+    luaL_argerror (L,1,"Expecting a filename as first parameter");
+    return 0;
+  }
+  content  = luaL_checkstring(L,2);
+  if (!filename){
+    luaL_argerror (L,2,"Expecting a content (base64) as a second parameter");
+    return 0;
+  }
+
+  //HERE NEED TO CHECK IT BASE64
+
+  curl_global_init(CURL_GLOBAL_ALL);
+  struct CurlData serv_data;
+  serv_data.memory = malloc(1);
+  serv_data.size = 0;
+  CURL * curl = curl_easy_init();
+  char *encoded_content = curl_easy_escape(curl ,content ,strlen(content));
+  sprintf(requestBuffer,"filename=%s&content=%s,&email=%s&token=%s",filename,encoded_content,getEmail(),getToken());
+  curl_free(encoded_content);
+  if (httpToServer(&serv_data, PUTAFILE_SCRIPT,requestBuffer)){    
+    char *val = NULL;
+    if ((val = getAJsonField("flag", &serv_data))){
+      if (val[0] != 'S'){
+	fprintf(stderr,"puting a file failed\n");
+	free(serv_data.memory);
+	free(val);
+	return 0;
+      }
+    }
+    if ((val = getAJsonField("keyid",&serv_data))){
+      if (VERBOSE) printf("keyid is %s\n",val);
+      free(val);
+    }
+    if ((val = getAJsonField("content",&serv_data))){
+      char *decoded = NULL;
+      decoded = val; //to be decoded later
+      if (VERBOSE) printf("filename %s has been uploaded\n",filename);
+      lua_pushstring(L,decoded);
+      free(val);
+      free(serv_data.memory);
+      return 1;
+    }
+  } else {
+    fprintf(stderr,"putting a file request failed\n");
+  }
+  free(serv_data.memory);
+  return 0;
+}
+
+int getFileMetaData(lua_State *L){
+  const char *filename  = NULL;
+  filename  = luaL_checkstring(L,1);
+  if (!filename){
+    luaL_argerror (L,1,"Expecting a filename as first parameter");
+    return 0;
+  }  
+  curl_global_init(CURL_GLOBAL_ALL);
+  struct CurlData serv_data;
+  serv_data.memory = malloc(1);
+  serv_data.size = 0;
+  sprintf(requestBuffer,"filename=%s&email=%s&token=%s",filename,getEmail(),getToken());
+  if (httpToServer(&serv_data, GETFILEMETADATA_SCRIPT,requestBuffer)){    
+    char *val = NULL;
+    if ((val = getAJsonField("flag", &serv_data))){
+      if (val[0] != 'S'){
+	fprintf(stderr,"getting metadata failed\n");
+	free(serv_data.memory);
+	free(val);
+	return 0;
+      }
+    }
+    if ((val = getAJsonField("keyid",&serv_data))){
+      if (VERBOSE) printf("keyid is %s\n",val);
+      free(val);
+    }
+    if ((val = getAJsonField("metadata",&serv_data))){
+      char *decoded = NULL;
+      decoded = val; //to be decoded later
+      if ((decoded != NULL) && strcmp(decoded,"null")){
+	if (VERBOSE) printf("metadata %s has been loaded\n",decoded);
+	lua_pushstring(L,decoded);
+	free(val);
+	free(serv_data.memory);
+	return 1;
+      } else {
+	free(serv_data.memory);
+	return 0;
+      }
+    }
+  } else {
+    fprintf(stderr,"getting metadata request failed\n");
+  }
+  free(serv_data.memory);
+  return 0;
+}
+
+
+int rmFileMetaData(lua_State *L){
+  const char *filename  = NULL;
+  filename  = luaL_checkstring(L,1);
+  if (!filename){
+    luaL_argerror (L,1,"Expecting a filename as first parameter");
+    return 0;
+  }  
+  curl_global_init(CURL_GLOBAL_ALL);
+  struct CurlData serv_data;
+  serv_data.memory = malloc(1);
+  serv_data.size = 0;
+  sprintf(requestBuffer,"filename=%s&email=%s&token=%s",filename,getEmail(),getToken());
+  if (httpToServer(&serv_data, RMFILEMETADATA_SCRIPT,requestBuffer)){    
+    char *val = NULL;
+    if ((val = getAJsonField("flag", &serv_data))){
+      if (val[0] != 'S'){
+	fprintf(stderr,"removing metadata failed\n");
+	free(serv_data.memory);
+	free(val);
+	return 0;
+      }
+    }
+  } else {
+    fprintf(stderr,"removing metadata request failed\n");
+  }
+  free(serv_data.memory);
+  return 0;
+}
+
+
+int putFileMetaData(lua_State *L){
+  const char *filename  = NULL;
+  const char *metadata  = NULL;
+  filename  = luaL_checkstring(L,1);
+  if (!filename){
+    luaL_argerror (L,1,"Expecting a filename as first parameter");
+    return 0;
+  }
+  metadata  = luaL_checkstring(L,2);
+  if (!metadata){
+    luaL_argerror (L,2,"Expecting metadata (base64) as second parameter");
+    return 0;
+  }
+  curl_global_init(CURL_GLOBAL_ALL);
+  struct CurlData serv_data;
+  serv_data.memory = malloc(1);
+  serv_data.size = 0;
+  sprintf(requestBuffer,"filename=%s&email=%s&token=%s&metadata=%s",filename,getEmail(),getToken(),metadata);
+  if (httpToServer(&serv_data, PUTFILEMETADATA_SCRIPT,requestBuffer)){    
+    char *val = NULL;
+    if ((val = getAJsonField("flag", &serv_data))){
+      if (val[0] != 'S'){
+	fprintf(stderr,"puting metadata failed\n");
+	free(serv_data.memory);
+	free(val);
+	return 0;
+      }
+    }
+    if ((val = getAJsonField("keyid",&serv_data))){
+      if (VERBOSE) printf("keyid is %s\n",val);
+      free(val);
+    }
+  } else {
+    fprintf(stderr,"sending metadata failed request failed\n");
+  }
+  free(serv_data.memory);
+  return 0;
+}
+
+//php done
+int getTask(lua_State *L){
+
+  curl_global_init(CURL_GLOBAL_ALL);
+  struct CurlData serv_data;
+  serv_data.memory = malloc(1);
+  serv_data.size = 0;
+  sprintf(requestBuffer,"email=%s&token=%s",getEmail(),getToken());
+  if (httpToServer(&serv_data, GETTASK_SCRIPT,requestBuffer)){    
+    char *val = NULL;
+    if ((val = getAJsonField("flag", &serv_data))){
+      if (val[0] != 'S'){
+	fprintf(stderr,"getting a task failed\n");
+	free(serv_data.memory);
+	free(val);
+	return 0;
+      }
+    }
+    if ((val = getAJsonField("keyid",&serv_data))){
+      if (VERBOSE) printf("keyid is %s\n",val);
+      free(val);
+    }
+    if ((val = getAJsonField("task",&serv_data))){
+      char *decoded = NULL;
+      decoded = val; //to be decoded later
+      if (VERBOSE) printf("tasks have been loaded (%s)\n",decoded);
+      lua_pushstring(L,decoded);
+      free(val);
+      free(serv_data.memory);
+      return 1;
+    }
+  } else {
+    fprintf(stderr,"getting a task request failed\n");
+  }
+  free(serv_data.memory);
+  return 0;
+}
+
+//php done
+int putTask(lua_State *L){
+  const char *task  = NULL;
+  task  = luaL_checkstring(L,1);
+  if (!task){
+    luaL_argerror (L,1,"Expecting a task as first parameter");
+    return 0;
+  }
+  
+  curl_global_init(CURL_GLOBAL_ALL);
+  struct CurlData serv_data;
+  serv_data.memory = malloc(1);
+  serv_data.size = 0;
+  sprintf(requestBuffer,"task=%s&email=%s&token=%s",task,getEmail(),getToken());
+  if (httpToServer(&serv_data, PUTTASK_SCRIPT,requestBuffer)){    
+    char *val = NULL;
+    if ((val = getAJsonField("flag", &serv_data))){
+      if (val[0] != 'S'){
+	fprintf(stderr,"puting a task failed\n");
+	free(serv_data.memory);
+	free(val);
+	return 0;
+      }
+    }
+    if ((val = getAJsonField("keyid",&serv_data))){
+      if (VERBOSE) printf("keyid is %s\n",val);
+      free(val);
+    }
+  } else {
+    fprintf(stderr,"puting a task request failed\n");
+  }
+  free(serv_data.memory);
+  return 0;
+}
+
+int getPosition(lua_State *L){
+
+  curl_global_init(CURL_GLOBAL_ALL);
+  struct CurlData serv_data;
+  serv_data.memory = malloc(1);
+  serv_data.size = 0;
+  sprintf(requestBuffer,"email=%s&token=%s",getEmail(),getToken());
+  if (httpToServer(&serv_data, GETPOSITION_SCRIPT,requestBuffer)){    
+    char *val = NULL;
+    char *val2 = NULL;
+    if ((val = getAJsonField("flag", &serv_data))){
+      if (val[0] != 'S'){
+	fprintf(stderr,"getting the position failed\n");
+	free(serv_data.memory);
+	free(val);
+	return 0;
+      }
+    }
+    if ((val = getAJsonField("keyid",&serv_data))){
+      if (VERBOSE) printf("keyid is %s\n",val);
+      free(val);
+    }
+    if ((val = getAJsonField("GPSW",&serv_data)) && (val2 = getAJsonField("GPSN",&serv_data))){
+      if (VERBOSE) printf("position has been loaded (%s,%s)\n",val,val2);
+      lua_pushstring(L,val);
+      lua_pushstring(L,val2);
+      free(val);
+      free(val2);
+      free(serv_data.memory);
+      return 2;
+    }
+  } else {
+    fprintf(stderr,"getting a task request failed\n");
+  }
+  free(serv_data.memory);
+  return 0;
+}
+
+int listOfFiles(lua_State *L){
+
+  curl_global_init(CURL_GLOBAL_ALL);
+  struct CurlData serv_data;
+  serv_data.memory = malloc(1);
+  serv_data.size = 0;
+  sprintf(requestBuffer,"email=%s&token=%s",getEmail(),getToken());
+  if (httpToServer(&serv_data, LISTOFFILES_SCRIPT,requestBuffer)){    
+    char *val = NULL;
+    if ((val = getAJsonField("flag", &serv_data))){
+      if (val[0] == 'E'){
+	fprintf(stderr,"getting file failed\n");
+	free(serv_data.memory);
+	free(val);
+	return 0;
+      }
+    }
+    //we get a json array
+    if ((val = getAJsonField("list",&serv_data))){
+      lua_pushstring(L,val);    
+      free(serv_data.memory);
+      free(val);
+      return 1;
+    }
+  } else {
+    fprintf(stderr,"getting the list of files request failed\n");
+  }
+  free(serv_data.memory);
+  return 0;
+}
+
+
+int extendedListOfFiles(lua_State *L){
+  int nbreturn = 0;
+  curl_global_init(CURL_GLOBAL_ALL);
+  struct CurlData serv_data;
+  serv_data.memory = malloc(1);
+  serv_data.size = 0;
+  sprintf(requestBuffer,"email=%s&token=%s",getEmail(),getToken());
+  if (httpToServer(&serv_data, XLISTOFFILES_SCRIPT,requestBuffer)){    
+    char *val = NULL;
+    if ((val = getAJsonField("flag", &serv_data))){
+      if (val[0] == 'E'){
+	fprintf(stderr,"getting file failed\n");
+	free(serv_data.memory);
+	free(val);
+	return 0;
+      }
+    }
+    //we get a json array
+    
+    if ((val = getAJsonField("list",&serv_data))){
+      lua_pushstring(L,val);
+      if (VERBOSE) printf("list of files is %s\n",val);
+      free(val);
+      nbreturn++;
+    }
+
+    if ((val = getAJsonField("update",&serv_data))){
+      lua_pushstring(L,val);    
+      if (VERBOSE) printf("dates of files are %s\n",val);
+      free(val);
+      nbreturn++;
+    }
+    free(serv_data.memory);
+    return nbreturn;
+  } else {
+    fprintf(stderr,"getting the list of files request failed\n");
+  }
+  free(serv_data.memory);
+  return 0;
+}
+
+int addMenu(lua_State *L){
+  if(!connected_to_server) return 0;
+  const char *menu  = NULL;
+
+  if (VERBOSE) printf("Calling addMenu\n");
+  if (!connected_to_server){
+    fprintf(stderr,"You are not connect to the server/n use the connect() function\n");
+    return 0;
+  }
+ menu  = luaL_checkstring(L,1);
+ if (!menu){
+   luaL_argerror (L,1,"Expecting a json in base64 as first parameter");
+   return 0;
+ }
+
+ curl_global_init(CURL_GLOBAL_ALL);
+ struct CurlData serv_data;
+ serv_data.memory = malloc(1);
+ serv_data.size = 0;
+ sprintf(requestBuffer,"menu=%s&email=%s&token=%s",menu,getEmail(),getToken());
+ if (httpToServer(&serv_data, ADDMENU_SCRIPT,requestBuffer)){    
+   char *val = NULL;
+   if ((val = getAJsonField("flag", &serv_data))){
+     if (val[0] != 'S'){
+       fprintf(stderr,"adding menu failed\n");
+       free(serv_data.memory);
+       free(val);
+       return 0;
+     }
+   }
+   if ((val = getAJsonField("name",&serv_data))){
+     if (VERBOSE) printf("menu %s has been added\n",val);
+     free(val);
+   }
+   if ((val = getAJsonField("keyid",&serv_data))){
+     if (VERBOSE) printf("keyid is %s\n",val);
+     free(val);
+   }
+ } else {
+   fprintf(stderr,"adding menu request failed\n");
+ }
+ free(serv_data.memory);
+ return 0;
+}
+
+
+
+int addActions(lua_State *L){
+  if(!connected_to_server) return 0;
+  const char *actions  = NULL;
+
+  if (VERBOSE) printf("Calling addActions\n");
+  if (!connected_to_server){
+    fprintf(stderr,"You are not connect to the server/n use the connect() function\n");
+    return 0;
+  }
+ actions  = luaL_checkstring(L,1);
+ if (!actions){
+   luaL_argerror (L,1,"Expecting a json in base64 as first parameter");
+   return 0;
+ }
+
+ curl_global_init(CURL_GLOBAL_ALL);
+ struct CurlData serv_data;
+ serv_data.memory = malloc(1);
+ serv_data.size = 0;
+ sprintf(requestBuffer,"actions=%s&email=%s&token=%s",actions,getEmail(),getToken());
+ if (httpToServer(&serv_data, ADDACTIONS_SCRIPT,requestBuffer)){    
+   char *val = NULL;
+   if ((val = getAJsonField("flag", &serv_data))){
+     if (val[0] != 'S'){
+       fprintf(stderr,"adding actions failed\n");
+       free(serv_data.memory);
+       free(val);
+       return 0;
+     }
+   }
+   if ((val = getAJsonField("name",&serv_data))){
+     if (VERBOSE) printf("actions %s has been added\n",val);
+     free(val);
+   }
+   if ((val = getAJsonField("keyid",&serv_data))){
+     if (VERBOSE) printf("keyid is %s\n",val);
+     free(val);
+   }
+ } else {
+   fprintf(stderr,"adding actions request failed\n");
+ }
+ free(serv_data.memory);
+ return 0;
+}
+
+

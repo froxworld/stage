@@ -1,0 +1,1 @@
+/usr/bin/gcc  -fPIC -O3 -DNDEBUG   -shared  -o cjson.so CMakeFiles/cjson.dir/lua_cjson.c.o CMakeFiles/cjson.dir/strbuf.c.o CMakeFiles/cjson.dir/fpconv.c.o 

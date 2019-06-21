@@ -1,0 +1,81 @@
+/* MyApsIsticLuaLib
+ * Copyright © 2016 François Bodin
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
+ */
+#ifndef MYAPSISTICLIBLUA_NETWORK_H
+#define MYAPSISTICLIBLUA_NETWORK_H
+
+#define CHANNEL_INPUT_SIZE 16384
+#define CHANNEL_OUTPUT_SIZE 1024
+
+#define ORDER_SIZE 256
+#define ADDR_SIZE 256
+
+#define SERVEUR_ADDR            "http://prototypel1.irisa.fr"
+#define LOGIN_SCRIPT            "/API/userConnect.php"
+#define ADDUSER_SCRIPT          "/API/addUser.php"
+#define RMUSER_SCRIPT          "/API/rmUser.php"
+#define CHGPASSWD_SCRIPT        "/API/chgPasswd.php"
+#define OUTPUT_SCRIPT           "/API/addOutput.php"
+#define GETPOSITION_SCRIPT      "/API/getPosition.php"
+#define GETFILE_SCRIPT          "/API/getFile.php"
+#define PUTAFILE_SCRIPT         "/API/putAFile.php"
+#define GETFILEMETADATA_SCRIPT  "/API/getFileMetaData.php"
+#define PUTFILEMETADATA_SCRIPT  "/API/putFileMetaData.php"
+#define RMFILEMETADATA_SCRIPT   "/API/rmFileMetaData.php"
+#define GETTASK_SCRIPT          "/API/getTask.php"
+#define PUTTASK_SCRIPT          "/API/putTask.php"
+#define LISTOFFILES_SCRIPT      "/API/listOfFiles.php"
+#define XLISTOFFILES_SCRIPT     "/API/extendedListOfFiles.php"
+#define ADDMENU_SCRIPT          "/API/addMenu.php"
+#define ADDACTIONS_SCRIPT       "/API/addActions.php"
+
+/* 10 ms in ns */
+#define TIMEOUT_NETWORK      1000000
+
+
+/* exports */
+int myapsisticlualib_connect(lua_State *L);
+int myapsisticlualib_disconnect(lua_State *L);
+int addUser(lua_State *L);
+int rmUser(lua_State *L);
+int addOutput(lua_State *L);
+int getFile(lua_State *L);
+int putAFile(lua_State *L);
+int getFileMetaData(lua_State *L);
+int putFileMetaData(lua_State *L);
+int rmFileMetaData(lua_State *L);
+int getTask(lua_State *L);
+int putTask(lua_State *L);
+int listOfFiles(lua_State *L);
+int extendedListOfFiles(lua_State *L);
+int addMenu(lua_State *L);
+int addActions(lua_State *L);
+int chgPasswd(lua_State *L);
+int getPosition(lua_State *L);
+
+void setToken(const char *tok, int n);
+void resetToken();
+char *getToken();
+
+void setEmail(const char *tok, int n);
+void resetEmail();
+char *getEmail();
+
+void setKeyid(const char *tok, int n);
+void resetKeyid();
+int getKeyid(lua_State *L);
+
+#endif

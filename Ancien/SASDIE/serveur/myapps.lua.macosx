@@ -1,0 +1,157 @@
+package.cpath = package.cpath .. ";/Users/bodin/Desktop/prototypeL1/FabLab/MyApsIsticLuaLib/build/alpha/?.dylib".. ";/Users/bodin/Desktop/prototypeL1/FabLab/MyApsIsticLuaLib/build/alpha/?.so"
+local l=require("libmyapsistic")
+local base64=require("ee5_base64")
+local json = require('cjson')
+
+local function trim1(s)
+  if (s == nil or s == '') then
+    return ''
+  end
+  return (s:gsub("^%s*(.-)%s*$", "%1"))
+end
+
+local function split(s, delimiter)
+    result = {};
+    for match in (s..delimiter):gmatch("(.-)"..delimiter) do
+        table.insert(result, match);
+    end
+    return result;
+end
+
+local function connex(mail,passw)
+      assert((type(mail) == 'string'), "le mail doit être une chaîne de caractère")
+      assert((type(passw) == 'string'), "le mot de passe doit être une chaîne de caractère")
+      l.connect(mail,passw)
+end
+
+local function getkey()
+      return 
+end
+
+local function disco()
+      l.disconnect()
+end
+
+local function filelist()
+      local list
+      list = l.listoffiles()
+      list = json.decode(list)
+      return list
+end
+
+local function setact(la)
+--      la = json.encode(la)
+      la = base64.encode(la)
+      l.addactions(la)
+end
+
+local function setmeta(m)
+      m = base64.encode(m)
+      l.addmenu(m)
+end
+
+local function getmetadataforfile(f)
+      local c
+      c = l.getmetadata(f)      
+      c = base64.decode(c)
+      -- will also need to be jsonified
+      return c
+end
+
+local function setoutput(c)
+      local pc
+      assert((type(c) == 'string'), "le contenu doit être une chaîne de caractère")
+      pc = "<html> <header><title>Réponse MyAppsIstic</title></header><body>";
+      pc = pc .. c;
+      pc = pc .. "</body></html>";
+      pc = base64.encode(pc);
+      l.generate("default.html",pc)
+end
+
+local function pt(t)
+      l.puttask(t)
+end
+
+local function gt()
+      local t
+       t = l.gettask()
+       t = base64.decode(t)
+      return t
+end
+
+local function cf(f,c)
+      c=base64.encode(c)
+      l.putfile(f,c)
+end
+
+local function pf(f)
+      local c
+      local file = io.open(f,"rb");
+      if (file ~= nil) then
+        c = file:read("*all")         
+        file:close()
+        c=base64.encode(c)
+        l.putfile(f,c)
+      else
+        print("Fichier non trouvé : "..f)
+      end
+end
+
+local function addusr(p,n,e,w,c)
+      l.adduser(p,n,e,w,c)
+end
+
+
+local function chgpasswd(p,n,e,w,c)
+      l.chgpasswd(p,n,e,w,c)
+end
+
+local function gf(f)
+      local c, lf
+      lf = filelist()
+      c = l.getfile(f)
+      c = base64.decode(c)
+      return c
+end
+
+local function wait(s)
+      os.execute("sleep " .. tonumber(s))
+end
+
+local function help()
+      print("[[**************************************************************************]]")
+      print("[[****************************** AIDE **************************************]]")
+      print("[[**************************************************************************]]")
+      print("connexion(mail,passwd) : établie la connexion avec le serveur")
+      print("files() : liste les fichiers de l'utilisateur")
+      print("[[**************************************************************************]]")
+      print("[[**************************************************************************]]")
+end
+
+
+--[[**************************************************************************]]
+--[[******************************  Module  **********************************]]
+--[[**************************************************************************]]
+return
+{
+    connexion			= connex,
+    deconnexion 		= disco,
+    definir_actions 		= setact,    
+    definir_metadata 		= setmeta,
+    lire_metadata		= getmetadataforfile,
+    enregistrer_html		= setoutput,
+    poster_action		= pt,
+    lire_action			= gt,
+    fichiers			= filelist,
+    obtenir_contenu_fichier 	= gf,
+    creer_fichier 	    	= cf,
+    envoyer_fichier 	    	= pf,
+    ajout_utilisateur		= addusr,
+    attendre     		= wait,
+    macle                       = getkey,
+    str_split                   = split,
+    str_trim                    = trim1,
+    chg_password                = chgpasswd,
+    aide       			= help
+}
+

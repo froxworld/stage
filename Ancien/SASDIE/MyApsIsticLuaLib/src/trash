@@ -1,0 +1,29 @@
+      if (jsoneq(serv_data.memory, &t[i], "flag") == 0) {
+	/* We may use strndup() to fetch string value */
+	if (VERBOSE) printf("- STATUS: %.*s\n", t[i+1].end-t[i+1].start,
+	       serv_data.memory + t[i+1].start);
+	if (*(serv_data.memory + t[i+1].start) != 'S'){
+	  fprintf(stderr,"Connection failed\n");
+	  return 0;
+	} 
+	i++;
+      } else if (jsoneq(serv_data.memory, &t[i], "name") == 0) {
+	/* We may additionally check if the value is either "true" or "false" */
+	if (VERBOSE) printf("- NAME: %.*s\n", t[i+1].end-t[i+1].start,
+	       serv_data.memory + t[i+1].start);
+	i++;
+      } else if (jsoneq(serv_data.memory, &t[i], "token") == 0) {
+	/* We may want to do strtol() here to get numeric value */
+	if (VERBOSE) printf("- TOKEN: %.*s\n", t[i+1].end-t[i+1].start,
+	       serv_data.memory + t[i+1].start);
+	setToken(serv_data.memory + t[i+1].start,t[i+1].end-t[i+1].start);
+	i++;
+      } else if (jsoneq(serv_data.memory, &t[i], "keyid") == 0) {
+        /* We may want to do strtol() here to get numeric value */
+	if (VERBOSE) printf("- KEYID: %.*s\n", t[i+1].end-t[i+1].start,
+	       serv_data.memory + t[i+1].start);
+        i++;
+      } else {
+	fprintf(stderr,"Unexpected key: %.*s\n", t[i].end-t[i].start,
+	       serv_data.memory + t[i].start);
+      }

@@ -1,0 +1,8 @@
+my=require("myapps")
+
+email='bodin@irisa.fr'
+passwd='141161'
+my.connexion(email,passwd)
+w,n = my.position()
+print(w,n)
+my.deconnexion()

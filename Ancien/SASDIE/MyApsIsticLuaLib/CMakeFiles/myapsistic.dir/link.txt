@@ -1,0 +1,1 @@
+/usr/bin/cc  -fPIC  -std=gnu99  -shared -Wl,-soname,libmyapsistic.so.0 -o build/alpha/libmyapsistic.so.0.2.0 CMakeFiles/myapsistic.dir/src/services.c.o CMakeFiles/myapsistic.dir/src/jsmn.c.o CMakeFiles/myapsistic.dir/src/network.c.o CMakeFiles/myapsistic.dir/src/lua_bindings.c.o -lpthread -lcurl 

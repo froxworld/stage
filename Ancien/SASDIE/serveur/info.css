@@ -1,0 +1,30 @@
+<style  type="text/css">
+@media (min-width: 481px) and (max-width: 768px) {
+    #banner { width:740px; }
+    #banner img { max-width:740px; max-height:222px; }
+    #main { width:740px; }
+    #main-content { width:450px; float:left; }
+    #widget-container { width:200px; float:right; }
+    .widget-content { width:160px; }
+}
+
+@media (min-width: 321px) and (max-width: 480px) {
+    #banner { width:450px; }
+    #banner img { max-width:450px; max-height:135px; }
+    #main { width:450px; }
+    #main-content { width:400px;}
+    #widget-container { width:400px; }
+    .widget-content { width:120px; margin:5px; float:left;}
+    .widget-text { display:none; }
+}
+
+@media (max-width: 320px) {
+    #banner { width:275px; }
+    #banner img { max-width:275px; max-height:83px; }
+    #main { width:250px; }
+    #main-content { width:250px;padding:0px;}
+    #widget-container { width:250px; padding:0px; }
+    .widget-content { width:250px; margin:5px;}
+    .widget-text { display:none; }
+}
+</style>

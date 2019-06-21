@@ -1,0 +1,7 @@
+/home/pi/SASDIE/MyApsIsticLuaLib/lua-cjson-2.1.0/CMakeFiles/install/local.dir
+/home/pi/SASDIE/MyApsIsticLuaLib/lua-cjson-2.1.0/CMakeFiles/install.dir
+/home/pi/SASDIE/MyApsIsticLuaLib/lua-cjson-2.1.0/CMakeFiles/list_install_components.dir
+/home/pi/SASDIE/MyApsIsticLuaLib/lua-cjson-2.1.0/CMakeFiles/install/strip.dir
+/home/pi/SASDIE/MyApsIsticLuaLib/lua-cjson-2.1.0/CMakeFiles/cjson.dir
+/home/pi/SASDIE/MyApsIsticLuaLib/lua-cjson-2.1.0/CMakeFiles/edit_cache.dir
+/home/pi/SASDIE/MyApsIsticLuaLib/lua-cjson-2.1.0/CMakeFiles/rebuild_cache.dir

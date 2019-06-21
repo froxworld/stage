@@ -1,0 +1,18 @@
+
+import java.io.File;
+import java.io.IOException;
+
+import java.awt.image.BufferedImage;
+import javax.imageio.ImageIO;
+
+public class testjava{
+    private static BufferedImage img = null;
+    public static void main(String[] args){
+	try {
+	    img = ImageIO.read(new File("image.jpg"));
+	    System.out.println("image.jpg has been loaded: " +img.getWidth() + "x" + img.getHeight());
+	} catch (IOException e) {
+	    System.out.println("could not load image.jpg");
+	}
+    }
+}

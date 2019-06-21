@@ -1,0 +1,7 @@
+/home/pi/SASDIE/MyApsIsticLuaLib/CMakeFiles/install/local.dir
+/home/pi/SASDIE/MyApsIsticLuaLib/CMakeFiles/install.dir
+/home/pi/SASDIE/MyApsIsticLuaLib/CMakeFiles/install/strip.dir
+/home/pi/SASDIE/MyApsIsticLuaLib/CMakeFiles/edit_cache.dir
+/home/pi/SASDIE/MyApsIsticLuaLib/CMakeFiles/rebuild_cache.dir
+/home/pi/SASDIE/MyApsIsticLuaLib/CMakeFiles/myapsistic.dir
+/home/pi/SASDIE/MyApsIsticLuaLib/CMakeFiles/list_install_components.dir

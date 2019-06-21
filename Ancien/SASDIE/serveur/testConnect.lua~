@@ -1,0 +1,6 @@
+my=require("myapps")
+
+email='bodin884@gmail.com'
+passwd='141161'
+my.connexion(email,passwd)
+my.deconnexion()

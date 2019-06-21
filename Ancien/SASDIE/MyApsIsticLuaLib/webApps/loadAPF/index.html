@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+  <head>
+<!-- The core React library -->
+<script src="https://unpkg.com/react@15.3.2/dist/react.js"></script>
+<!-- The ReactDOM Library -->
+<script src="https://unpkg.com/react-dom@15.3.2/dist/react-dom.js"></script>
+
+    <meta charset="utf-8">
+    <title>APF</title>
+    <link rel="stylesheet" href="base.css" />
+  </head>
+  <body>
+    <h1>Page de dépot de vos fichiers</h1>
+    <p>
+      1) Vous devez vous connecter :
+      <ul>
+        <li>Entrez votre identifiant : email de l'université </li>
+        <li>Entrez votre mot de passe : votre numéro d'étudiant</li>
+        <li>Cliquez sur "Se connecter"</li>
+      </ul>
+    </p>
+   <p>
+     2) Choisir le fichier à déposer  :
+     <ul>
+       <li> Le choisir. </li>
+       <li> Lorsque ce choix est fait, le contenu du fichier apparaît en bas de la page.</li>
+     </ul>
+   </p>
+   <p>
+     3) Confirmer le dépôt :
+     <ul>
+       <li> Cliquez sur le bouton "Déposer". </li>
+       <li> La liste des fichiers déjà déposés est affichée en bas de la page. </li>
+       <li> Si vous déposez une nouvelle fois un fichier, l'ancienne version sera écrasée.</li>
+     </ul>
+    </p>
+    <div id="container">
+      <p>
+	Cette page vous permet de déposer vos fichiers.
+      </p>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.24/browser.min.js"></script>
+    <script type="text/babel" src="loadapf.js"></script>
+  </body>
+</html>

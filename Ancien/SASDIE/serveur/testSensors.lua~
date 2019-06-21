@@ -1,0 +1,11 @@
+my=require("myapps")
+
+val = my.capteurs()
+print(val[1])
+print(val[2])
+print(val[3])
+print(val[4])
+print(val[5])
+print(val[6])
+
+
