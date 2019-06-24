@@ -1,6 +1,5 @@
 import time
 import picamera
-import picamera
 
 with picamera.PiCamera() as camera:
     camera.resolution = (640, 480)
