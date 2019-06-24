@@ -1,0 +1,2 @@
+#  fichier qui est a lancer avec le commande sudo contrab -e
+# qui permet dfe se lancer au demarragde du lancement du raspberry pi
