@@ -31,6 +31,9 @@ def main():
     gp.output(12, False)
     capture(3)
 
+
+
+
     image1 = cv2.imread(args['img1'])
     image2 = cv2.imread(args['img2'])
 

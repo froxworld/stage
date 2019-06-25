@@ -38,7 +38,9 @@ information = {
 }
 
 camera = PiCamera()
-for i in range(5):
+sleep(30)
+
+for i in range(1000):
     sleep(1)
     camera.capture('/home/pi/francois/stage/image/camera1-image%s.jpg' % i)
 
