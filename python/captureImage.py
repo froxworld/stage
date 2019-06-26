@@ -9,8 +9,9 @@ import argparse
 import cv2
 
 numero = 0
-latitude = 0
-longitude = 0
+latitude = 10
+longitude = 10
+altitude = 50
 hauteur = 0
 vitesse_vent = 0
 roulis = 0
@@ -80,27 +81,27 @@ def capture(numeroCamera, index, meteo):
         # reglages iso 200, awb balance des blancs auto, ex exposition auto , -a heure et date 20:09:33 10/12/2019
         # -q qualite 100 , -o output chemin de sortie, -r raw fichier non compresser, -t time une photo toute les 2 secondes
         # -e encoding jpg, -x exiff information dans la photo directement
-        cmd = 'raspistill -ISO 200 -awb auto -ex auto -a 12 -q 100 -t 2000 -o {0}{1}{2} -e jpg --exif WhiteBalance, GPSLatitude, GPSLongitude, GPSAltitude, GPSAreaInformation,'.format(
-            '/home/pi/francois/stage/image/camera', index, '.jpg')
-        camera.capture('/home/pi/francois/stage/image/camera1-image%s.jpg' % index)
+        cmd = 'raspistill -ISO 200 -awb auto -ex auto -a 12 -q 100 -t 500 -o {0}{1}{2} -e jpg -x WhiteBalance -x GPS.GPSLatitude={3} -x GPS.GPSLongitude={4} -x GPS.GPSAltitude={5}'.format(
+            '/home/pi/francois/stage/image/camera1-', index, '.jpg', latitude, longitude, altitude)
+       # camera.capture('/home/pi/francois/stage/image/camera1-image%s.jpg' % index)
         os.system(cmd)
 
     if numeroCamera == 2:
         # reglages iso 200, awb balance des blancs auto, ex exposition auto , -a heure et date 20:09:33 10/12/2019
         # -q qualite 100 , -o output chemin de sortie, -r raw fichier non compresser, -t time une photo toute les 2 secondes
         # -e encoding jpg, -x exiff information dans la photo directement
-        cmd = 'raspistill -ISO 200 -awb auto -ex auto -a 12 -q 100 -t 2000 -o {0}{1}{2} -e jpg --exif WhiteBalance, GPSLatitude, GPSLongitude, GPSAltitude, GPSAreaInformation,'.format(
-            '/home/pi/francois/stage/image/camera', index, '.jpg')
-        camera.capture('/home/pi/francois/stage/image/camera2-image%s.jpg' % index)
+        cmd = 'raspistill -ISO 200 -awb auto -ex auto -a 12 -q 100 -t 500 -o {0}{1}{2} -e jpg -x WhiteBalance -x GPS.GPSLatitude={3} -x GPS.GPSLongitude={4} -x GPS.GPSAltitude={5}'.format(
+            '/home/pi/francois/stage/image/camera2-', index, '.jpg', latitude, longitude, altitude)
+       # camera.capture('/home/pi/francois/stage/image/camera1-image%s.jpg' % index)
         os.system(cmd)
 
     if numeroCamera == 3:
         # reglages iso 200, awb balance des blancs auto, ex exposition auto , -a heure et date 20:09:33 10/12/2019
         # -q qualite 100 , -o output chemin de sortie, -r raw fichier non compresser, -t time une photo toute les 2 secondes
         # -e encoding jpg, -x exiff information dans la photo directement
-        cmd = 'raspistill -ISO 200 -awb auto -ex auto -a 12 -q 100 -t 2000 -o {0}{1}{2} -e jpg --exif WhiteBalance, GPSLatitude, GPSLongitude, GPSAltitude, GPSAreaInformation,'.format(
-            '/home/pi/francois/stage/image/camera', index, '.jpg')
-        camera.capture('/home/pi/francois/stage/image/camera3-image%s.jpg' % index)
+        cmd = 'raspistill -ISO 200 -awb auto -ex auto -a 12 -q 100 -t 500 -o {0}{1}{2} -e jpg -x WhiteBalance -x GPS.GPSLatitude={3} -x GPS.GPSLongitude={4} -x GPS.GPSAltitude={5}'.format(
+            '/home/pi/francois/stage/image/camera3-', index, '.jpg', latitude, longitude, altitude)
+       # camera.capture('/home/pi/francois/stage/image/camera1-image%s.jpg' % index)
         os.system(cmd)
 
 

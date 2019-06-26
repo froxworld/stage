@@ -1,6 +1,6 @@
 import exifread
 
-
+lat, long = get_exif_location(get_exif_data(image_file))
 # based on https://gist.github.com/erans/983821
 
 def _get_if_exist(data, key):
@@ -8,6 +8,12 @@ def _get_if_exist(data, key):
         return data[key]
 
     return None
+
+def get_exif_data(image_file):
+    with open(image_file, 'rb') as f:
+        exif_tags = exifread.process_file(f)
+    return exif_tags
+
 
 
 def _convert_to_degress(value):
@@ -35,6 +41,15 @@ def get_exif_location(exif_data):
     gps_latitude_ref = _get_if_exist(exif_data, 'GPS GPSLatitudeRef')
     gps_longitude = _get_if_exist(exif_data, 'GPS GPSLongitude')
     gps_longitude_ref = _get_if_exist(exif_data, 'GPS GPSLongitudeRef')
+    gps_altitude_ref = _get_if_exist(exif_data, 'GPS GPSAltitudeRef')
+    gps_altitude = _get_if_exist(exif_data, 'GPS GPSAltitude')
+
+    if gps_altitude and gps_altitude_ref:
+        alt = gps_altitude.values[0]
+        altitude = alt.num / alt.den
+        if gps_altitude_ref.values[0] == 1: altitude *= -1
+
+    return lat, lon, altitude
 
     if gps_latitude and gps_latitude_ref and gps_longitude and gps_longitude_ref:
         lat = _convert_to_degress(gps_latitude)
@@ -46,3 +61,4 @@ def get_exif_location(exif_data):
             lon = 0 - lon
 
     return lat, lon
+
