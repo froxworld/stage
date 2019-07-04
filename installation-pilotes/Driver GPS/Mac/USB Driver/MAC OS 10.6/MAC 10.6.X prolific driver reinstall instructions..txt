@@ -1,0 +1,24 @@
+If your MAC is not able to recognize our USB GPS Receiver, PLEASE FOLLOW THESE STEPS VERY CAREFULLY!
+
+Have your USB GPS device unplugged and open up your Hard Drive folder and go to System/Library/Extensions folder and search for "ProlificUsbSerial.kext" and DELETE that file. Then restart your computer.
+
+Then after the restart, reinstall the driver "PL2303_1.4.0.dmg" from ( http://www.usglobalsat.com/store/download/62/pl2303_1.4.0.zip ), which is the USB driver for Mac OS 10.6.X. After the install, it will ask you to restart the computer again. 
+ 
+You can reference this document on how to install the driver ( http://www.usglobalsat.com/store/download/57/br355_gps_mac_v2.0.pdf ).
+ 
+After your computer is restarted, then plug in the USB GPS Receiver and use our GPS Utility to test your USB GPS Receiver: 
+( http://www.usglobalsat.com/store/download/62/mac_gps_utility_v2.zip ).
+ 
+Configure the application settings to the following:
+
+ 
+Port: /dev/cu.usbserial
+Rate: 4800
+Units: Miles
+ 
+Let us know if you are still having issues. Thanks.
+
+USGlobalSat Tech Support
+Support@usglobalsat.com
+888-323-8730
+M-F 8:30AM ~ 5PM PST
