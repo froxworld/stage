@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f4254f7a-6e1b-453f-8c28-fa5a8be4b4e8" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/python/captureImage.py" beforeDir="false" afterPath="$PROJECT_DIR$/python/captureImage.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/python/gps.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -12,11 +13,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/python/captureImage.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1026">
-              <caret line="110" column="23" selection-start-line="110" selection-start-column="23" selection-end-line="110" selection-end-column="23" />
+            <state relative-caret-position="486">
+              <caret line="72" lean-forward="true" selection-start-line="72" selection-end-line="72" />
               <folding>
                 <element signature="e#33#55#0" expanded="true" />
               </folding>
@@ -36,13 +37,25 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/python/anemometre.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="120">
-              <caret line="8" lean-forward="true" selection-start-line="8" selection-end-line="8" />
+            <state relative-caret-position="245">
+              <caret line="22" column="64" lean-forward="true" selection-start-line="22" selection-start-column="64" selection-end-line="22" selection-end-column="64" />
               <folding>
                 <element signature="e#410#430#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/python/gps.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="285">
+              <caret line="19" lean-forward="true" selection-start-line="19" selection-end-line="19" />
+              <folding>
+                <element signature="e#0#10#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -120,14 +133,15 @@
         <option value="$PROJECT_DIR$/python/exifInfo.py" />
         <option value="$PROJECT_DIR$/python/anemometre.py" />
         <option value="$PROJECT_DIR$/python/captureImage.py" />
+        <option value="$PROJECT_DIR$/python/gps.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
     <option name="x" value="197" />
-    <option name="y" value="113" />
-    <option name="width" value="2122" />
-    <option name="height" value="1285" />
+    <option name="y" value="121" />
+    <option name="width" value="2109" />
+    <option name="height" value="1277" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="2" id="Add" />
@@ -166,6 +180,9 @@
     <property name="settings.editor.selected.configurable" value="configurable.group.project" />
   </component>
   <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/python" />
+    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="/Volumes/USB" />
       <recent name="$PROJECT_DIR$/image" />
@@ -348,21 +365,7 @@
       <workItem from="1561445338852" duration="4391000" />
       <workItem from="1561542835303" duration="7200000" />
       <workItem from="1561639390084" duration="1691000" />
-      <workItem from="1562238885119" duration="2852000" />
-    </task>
-    <task id="LOCAL-00009" summary="ajout de paho">
-      <created>1558455210466</created>
-      <option name="number" value="00009" />
-      <option name="presentableId" value="LOCAL-00009" />
-      <option name="project" value="LOCAL" />
-      <updated>1558455210466</updated>
-    </task>
-    <task id="LOCAL-00010" summary="retire de paho">
-      <created>1558455309584</created>
-      <option name="number" value="00010" />
-      <option name="presentableId" value="LOCAL-00010" />
-      <option name="project" value="LOCAL" />
-      <updated>1558455309584</updated>
+      <workItem from="1562238885119" duration="3533000" />
     </task>
     <task id="LOCAL-00011" summary="retire de paho">
       <created>1558455476178</created>
@@ -693,17 +696,31 @@
       <option name="project" value="LOCAL" />
       <updated>1562241156534</updated>
     </task>
-    <option name="localTasksCounter" value="58" />
+    <task id="LOCAL-00058" summary="ajout anemometre">
+      <created>1562241828942</created>
+      <option name="number" value="00058" />
+      <option name="presentableId" value="LOCAL-00058" />
+      <option name="project" value="LOCAL" />
+      <updated>1562241828942</updated>
+    </task>
+    <task id="LOCAL-00059" summary="ajout take picture du moment qui marche pour 3 cameras">
+      <created>1562241916106</created>
+      <option name="number" value="00059" />
+      <option name="presentableId" value="LOCAL-00059" />
+      <option name="project" value="LOCAL" />
+      <updated>1562241916106</updated>
+    </task>
+    <option name="localTasksCounter" value="60" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="41974000" />
+    <option name="totallyTimeSpent" value="42655000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="197" y="113" width="2122" height="1285" extended-state="0" />
+    <frame x="197" y="121" width="2109" height="1277" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.15865384" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.15965167" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -714,9 +731,9 @@
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
-      <window_info active="true" anchor="bottom" id="Version Control" order="8" visible="true" weight="0.02514669" />
+      <window_info anchor="bottom" id="Version Control" order="8" weight="0.02514669" />
       <window_info anchor="bottom" id="Database Changes" order="9" />
-      <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
+      <window_info active="true" anchor="bottom" id="Event Log" order="10" side_tool="true" visible="true" weight="0.3299578" />
       <window_info anchor="bottom" id="Terminal" order="11" weight="0.32942164" />
       <window_info anchor="bottom" id="Python Console" order="12" weight="0.29589272" />
       <window_info active="true" anchor="right" x="0" y="0" width="424" height="863" id="Documentation" order="0" side_tool="true" visible="true" weight="0.27856168" />
@@ -743,7 +760,8 @@
     <MESSAGE value="ajout deconnection" />
     <MESSAGE value="ajout capture image metadata" />
     <MESSAGE value="ajout anemometre" />
-    <option name="LAST_COMMIT_MESSAGE" value="ajout anemometre" />
+    <MESSAGE value="ajout take picture du moment qui marche pour 3 cameras" />
+    <option name="LAST_COMMIT_MESSAGE" value="ajout take picture du moment qui marche pour 3 cameras" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/python/thread1.py">
@@ -915,22 +933,32 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/python/anemometre.py">
+    <entry file="file://$PROJECT_DIR$/python/captureImage.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="8" lean-forward="true" selection-start-line="8" selection-end-line="8" />
+        <state relative-caret-position="486">
+          <caret line="72" lean-forward="true" selection-start-line="72" selection-end-line="72" />
           <folding>
-            <element signature="e#410#430#0" expanded="true" />
+            <element signature="e#33#55#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/python/captureImage.py">
+    <entry file="file://$PROJECT_DIR$/python/gps.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1026">
-          <caret line="110" column="23" selection-start-line="110" selection-start-column="23" selection-end-line="110" selection-end-column="23" />
+        <state relative-caret-position="285">
+          <caret line="19" lean-forward="true" selection-start-line="19" selection-end-line="19" />
           <folding>
-            <element signature="e#33#55#0" expanded="true" />
+            <element signature="e#0#10#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/python/anemometre.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="245">
+          <caret line="22" column="64" lean-forward="true" selection-start-line="22" selection-start-column="64" selection-end-line="22" selection-end-column="64" />
+          <folding>
+            <element signature="e#410#430#0" expanded="true" />
           </folding>
         </state>
       </provider>
