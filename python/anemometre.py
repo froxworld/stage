@@ -31,7 +31,7 @@ with Serial(port="/dev/ttyACM0", baudrate=9600, timeout=1, writeTimeout=1) as po
     if port_serie.isOpen():
         while True:
             ligne = port_serie.read_line()
-            print ligne
+            print(ligne)
 
 nombre = input("Entrez un nombre : ")
 port_serie.write(nombre.encode('ascii'))
