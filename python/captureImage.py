@@ -1,12 +1,12 @@
-from picamera import PiCamera
+# from picamera import PiCamera
 from time import sleep
 import json  # pour sauvegarder  les coordonnees de chaque fichier
 
-import numpy as np
+# import cv2
+import time
+
 import RPi.GPIO as gp
 import os
-import argparse
-import cv2
 
 numero = 0
 latitude = 10
@@ -22,7 +22,8 @@ mois = 'juin'
 heure = 0
 minute = 0
 nomFichierImage = 'raspberry{0}'.format(numero)
-meteo = 'soleil' #soleil nuageux
+meteo = 0  # 0 soleil pour un iso 200
+# 1 nuageux pour un iso 800
 
 information = {
     'date': 'date',
@@ -38,16 +39,30 @@ information = {
     'annee': annee,
     'heure': heure,
     'minute': minute,
-    'nom_fichier_image': nomFichierImage
+    'nom_fichier_image': nomFichierImage,
+    'meteo': meteo
 }
 
 gp.setwarnings(False)  # pour acceder au cameras avec les pin 7 11 12
-gp.setmode(gp.BOARD)
-gp.setup(7, gp.OUT)
+gp.setmode(gp.BOARD)  # initialisation des pin pour 4 cameras
+
+gp.setup(7, gp.OUT)  # setup
 gp.setup(11, gp.OUT)
 gp.setup(12, gp.OUT)
-#camera = PiCamera()
+gp.setup(15, gp.OUT)
+gp.setup(16, gp.OUT)
+gp.setup(21, gp.OUT)
+gp.setup(22, gp.OUT)
 
+gp.output(11, True)
+gp.output(12, True)
+gp.output(15, True)
+gp.output(16, True)
+gp.output(21, True)
+gp.output(22, True)
+
+
+# camera = PiCamera()  # pour prendre une photo avec picamera plustoto que raspistill
 
 def main():
     for index in range(3):
@@ -66,46 +81,31 @@ def main():
         gp.output(12, False)
         capture(3, index, meteo)
 
+        gp.output(7, True)
+        gp.output(11, True)
+        gp.output(12, False)
+        capture(4, index, meteo)
+
         # sauvegarde des informations sous format json de toutes les photos, gps, ...
         with open('data.txt', 'w') as fichierjson:
             json.dump(information, fichierjson)  # fermeture du fichier automatique avec with
 
 
-def capture(numeroCamera, index, meteo):
-
-
+def capture(camera, index, meteo):
+    cmd = str("raspistill -t 100 -o camera{0}_{1}.jpg".format(camera, index))
+    # deuxieme essai avec des parametre non de base
+    # reglages iso 200, awb balance des blancs auto, ex exposition auto , -a heure et date 20:09:33 10/12/2019
+    # -q qualite 100 , -o output chemin de sortie, -r raw fichier non compresser, -t time une photo toute les 2 secondes
+    # -e encoding jpg, -x exiff information dans la photo directement
     # -awb sun cloud  pour deux type de temps pour prendre les photos
 
-
-    if numeroCamera == 1:
-        # reglages iso 200, awb balance des blancs auto, ex exposition auto , -a heure et date 20:09:33 10/12/2019
-        # -q qualite 100 , -o output chemin de sortie, -r raw fichier non compresser, -t time une photo toute les 2 secondes
-        # -e encoding jpg, -x exiff information dans la photo directement
-        cmd = 'raspistill -ISO 200 -awb auto -ex auto -a 12 -q 100 -t 500 -o {0}{1}{2} -e jpg -x WhiteBalance -x GPS.GPSLatitude={3} -x GPS.GPSLongitude={4} -x GPS.GPSAltitude={5}'.format(
-            '/home/pi/francois/stage/image/camera1-', index, '.jpg', latitude, longitude, altitude)
-       # camera.capture('/home/pi/francois/stage/image/camera1-image%s.jpg' % index)
-        os.system(cmd)
-
-    if numeroCamera == 2:
-        # reglages iso 200, awb balance des blancs auto, ex exposition auto , -a heure et date 20:09:33 10/12/2019
-        # -q qualite 100 , -o output chemin de sortie, -r raw fichier non compresser, -t time une photo toute les 2 secondes
-        # -e encoding jpg, -x exiff information dans la photo directement
-        cmd = 'raspistill -ISO 200 -awb auto -ex auto -a 12 -q 100 -t 500 -o {0}{1}{2} -e jpg -x WhiteBalance -x GPS.GPSLatitude={3} -x GPS.GPSLongitude={4} -x GPS.GPSAltitude={5}'.format(
-            '/home/pi/francois/stage/image/camera2-', index, '.jpg', latitude, longitude, altitude)
-       # camera.capture('/home/pi/francois/stage/image/camera1-image%s.jpg' % index)
-        os.system(cmd)
-
-    if numeroCamera == 3:
-        # reglages iso 200, awb balance des blancs auto, ex exposition auto , -a heure et date 20:09:33 10/12/2019
-        # -q qualite 100 , -o output chemin de sortie, -r raw fichier non compresser, -t time une photo toute les 2 secondes
-        # -e encoding jpg, -x exiff information dans la photo directement
-        cmd = 'raspistill -ISO 200 -awb auto -ex auto -a 12 -q 100 -t 500 -o {0}{1}{2} -e jpg -x WhiteBalance -x GPS.GPSLatitude={3} -x GPS.GPSLongitude={4} -x GPS.GPSAltitude={5}'.format(
-            '/home/pi/francois/stage/image/camera3-', index, '.jpg', latitude, longitude, altitude)
-       # camera.capture('/home/pi/francois/stage/image/camera1-image%s.jpg' % index)
-        os.system(cmd)
+    # cmd = 'raspistill -ISO 200 -awb auto -ex auto -a 12 -q 100 -t 500 -o {0}{1}{2} -e jpg -x WhiteBalance -x GPS.GPSLatitude={3} -x GPS.GPSLongitude={4} -x GPS.GPSAltitude={5}'.format(
+    # '/home/pi/francois/stage/image/camera1-', index, '.jpg', latitude, longitude, altitude)
+    os.system(cmd)
 
 
 if __name__ == "__main__":
     main()
-
-# fichier_data = open('data.json', 'w')
+    gp.output(7, False)
+    gp.output(11, False)
+    gp.output(12, True)
