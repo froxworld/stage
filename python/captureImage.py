@@ -46,7 +46,7 @@ gp.setmode(gp.BOARD)
 gp.setup(7, gp.OUT)
 gp.setup(11, gp.OUT)
 gp.setup(12, gp.OUT)
-camera = PiCamera()
+#camera = PiCamera()
 
 
 def main():
