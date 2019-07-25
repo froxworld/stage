@@ -1,3 +1,7 @@
+#Francois Auxietre mail:froxworld@gmail.com
+#prise de photos pour 3 cameras
+# documentation https://pythonhosted.org/RPIO/
+
 # from picamera import PiCamera
 from time import sleep
 import json  # pour sauvegarder  les coordonnees de chaque fichier
@@ -5,8 +9,12 @@ import json  # pour sauvegarder  les coordonnees de chaque fichier
 # import cv2
 import time
 
+
+
 import RPi.GPIO as gp
 import os
+from time import sleep
+
 
 numero = 0
 latitude = 10
@@ -43,9 +51,11 @@ information = {
     'meteo': meteo
 }
 
+# desactivation des warnings
 gp.setwarnings(False)  # pour acceder au cameras avec les pin 7 11 12
 gp.setmode(gp.BOARD)  # initialisation des pin pour 4 cameras
 
+#configuration des ports 7,11,12, 15, 16, 21, 22
 gp.setup(7, gp.OUT)  # setup
 gp.setup(11, gp.OUT)
 gp.setup(12, gp.OUT)
@@ -54,6 +64,7 @@ gp.setup(16, gp.OUT)
 gp.setup(21, gp.OUT)
 gp.setup(22, gp.OUT)
 
+#configuration des sorties
 gp.output(11, True)
 gp.output(12, True)
 gp.output(15, True)
@@ -69,22 +80,28 @@ def main():
         gp.output(7, False)
         gp.output(11, False)
         gp.output(12, True)
-        capture(1, index, meteo)
+        # lancement de la prise de capture d'image pour la camera 4
+        capture(4, index, meteo)
 
         gp.output(7, True)
         gp.output(11, False)
         gp.output(12, True)
-        capture(2, index, meteo)
+        # lancement de la prise de capture d'image pour la camera 4
+        capture(5, index, meteo)
 
         gp.output(7, False)
         gp.output(11, True)
         gp.output(12, False)
-        capture(3, index, meteo)
+        # lancement de la prise de capture d'image pour la camera 4
+        capture(6, index, meteo)
 
-        gp.output(7, True)
-        gp.output(11, True)
-        gp.output(12, False)
-        capture(4, index, meteo)
+        # en cas de quatrieme camera
+        #gp.output(7, True)
+        #gp.output(11, True)
+        #gp.output(12, False)
+        #capture(4, index, meteo)
+        # temporisation de deux secondes avant de reprendre des photos
+        sleep(2)
 
         # sauvegarde des informations sous format json de toutes les photos, gps, ...
         with open('data.txt', 'w') as fichierjson:
@@ -99,8 +116,8 @@ def capture(camera, index, meteo):
     # -e encoding jpg, -x exiff information dans la photo directement
     # -awb sun cloud  pour deux type de temps pour prendre les photos
 
-    # cmd = 'raspistill -ISO 200 -awb auto -ex auto -a 12 -q 100 -t 500 -o {0}{1}{2} -e jpg -x WhiteBalance -x GPS.GPSLatitude={3} -x GPS.GPSLongitude={4} -x GPS.GPSAltitude={5}'.format(
-    # '/home/pi/francois/stage/image/camera1-', index, '.jpg', latitude, longitude, altitude)
+    cmd = 'raspistill -ISO 200 -awb auto -ex auto -a 12 -q 100 -t 500 -o {0}{1}{2} -e jpg -x WhiteBalance -x GPS.GPSLatitude={3} -x GPS.GPSLongitude={4} -x GPS.GPSAltitude={5}'.format(
+     '/home/pi/francois/stage/image/camera1-', index, '.jpg', latitude, longitude, altitude)
     os.system(cmd)
 
 
