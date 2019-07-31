@@ -35,8 +35,9 @@ id_client = '1'
 mqtt_server = '192.168.66.5'
 
 def getMachineName():
-   ipadd = socket.gethostbyname(socket.gethostname())
-   return 'pi_' + ipadd.replace('.','_')
+   #ipadd = socket.gethostbyname(socket.gethostname())
+   #return 'pi_' + ipadd.replace('.','_')
+   return socket.gethostname()
 
 class Photo():
    iso = 100
@@ -105,21 +106,23 @@ class Photo():
        cmdImage = 'raspistill {0} -e jpg -o {1} -t {2}'.format(self.preview, nom, self.temps)
     print(cmdImage)
     os.system(cmdImage)
-    cmdCle ='cp {0} {1}'.format(nom, self.sdDir)
-    os.system(cmdCle)
+
+    if self.sdDir != "none":
+       cmdCle ='cp {0} {1}'.format(nom, self.sdDir)
+       os.system(cmdCle)
 
    def snapAll(self):
         self.setCam(1)
 	#lancement de la prise de capture d'image pour la camera 4
-        self.capture((self.cameraID*self.cameraCount))
+        self.capture((cameraID*cameraCount))
 
         self.setCam(2)
 	#idem pour la 5  ( au milieu)
-        self.capture((self.cameraID*self.cameraCount)+1)
+        self.capture((cameraID*cameraCount)+1)
 
         self.setCam(3)
 	#idem pour la 6
-        self.capture((self.cameraID*self.cameraCount)+2)
+        self.capture((cameraID*cameraCount)+2)
 
         #gp.output(7, True)
         #gp.output(11, True)
@@ -153,17 +156,16 @@ class MqttCmd():
 
       self.client.connect(self.repartiteur)  # connection au repartiteur
       self.client.loop_start()  # debut de la boucle
+      print("log : Server started")
     
       #  publication de donnee "topic", "contenu du topic "
       date = strftime("%a, %d %b %Y %H:%M:%S +0000", gmtime())
+      print("ballon/clients".format(id_client), "ballon/{0}/date".format(id_client))
       self.client.publish("ballon/clients".format(id_client), "{0}".format(id_client))
       self.client.publish("ballon/{0}/date".format(id_client), "{0}".format(date))
-      #self.client.publish("date", "{0}".format(date))
-      #self.client.publish("heure/1", "{0}".format(self.temps))
-      #self.client.publish("heure/2", "{0}".format(self.temps))
 
       self.client.subscribe("ballon/{0}/cmd/#".format(id_client))
-      self.client.subscribe("ballon/cmd/#".format(id_client))
+      self.client.subscribe("ballon/cmd")
 
    def close(self):
       self.client.publish("ballon/close".format(self.id_client), "{0}".format(self.id_client))
@@ -178,7 +180,7 @@ class MqttCmd():
    @staticmethod
    def on_connect(le_client, donnee, drapeaux, resultat_de_connection):
       if resultat_de_connection == 0:
-         print("connection reussie avec le client :".format(le_client))
+         print("connection reussie avec le client :{0}".format(le_client))
       else:
          print("probleme de connection code de retour =", resultat_de_connection)
 
@@ -199,9 +201,9 @@ class MqttCmd():
          self.over = True
          self.close()
       elif cmd == 'sequence':
-         self.client.publish("ballon/{0}/status".format(id_client), "snap received")
+         self.client.publish("ballon/{0}/status".format(id_client), "snap for {0} with index {1} received".format(id_client, self.photo.indexPhoto))
          self.photo.snapAll()
-         self.client.publish("ballon/{0}/status".format(id_client), "snap {0} done".format(self.photo.indexPhoto))
+         self.client.publish("ballon/{0}/status".format(id_client), "snap {0} DONE for {1}".format(self.photo.indexPhoto, id_client))
 
    def __str__(self):
       return "MqttClient {0}".format(self.id_client)
