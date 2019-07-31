@@ -3,19 +3,16 @@ from time import gmtime, strftime  # pour affichier notre heure
 from enum import Enum
 import time
 
-
 class Extension(Enum):
     jpg = 1
     png = 2
     svg = 3
-
 
 id_client = '1'
 nom_image = "test"
 chemin = "/home/pi/francois/"
 id_camera = 0
 compteur = 0
-
 
 # methode de login au raapartiteur (client, userdata, level, buf)
 def on_log(client, donnee, niveau, tampon):
@@ -34,12 +31,10 @@ def on_connect(le_client, donnee, drapeaux, resultat_de_connection):
 def on_disconect(le_client, donnee, drapeaux, resultat_de_connection=0):
     print("Deconnection du client avec le code de retour ", resultat_de_connection)
 
-
 # derniere methode on_message quand le client a souscrit
 def on_message(le_client, donnee, message):
     sujet = message.topic
     print("ok dans message")
-
 
 repartiteur = "10.42.0.1"  # adresse du repartiteur (broker)
 client = mqtt.Client(id_client)  # creation de l'instance d un client
