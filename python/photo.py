@@ -160,9 +160,9 @@ class MqttCmd():
     
       #  publication de donnee "topic", "contenu du topic "
       date = strftime("%a, %d %b %Y %H:%M:%S +0000", gmtime())
-      print("ballon/clients".format(id_client), "ballon/{0}/date".format(id_client))
-      self.client.publish("ballon/clients".format(id_client), "{0}".format(id_client))
-      self.client.publish("ballon/{0}/date".format(id_client), "{0}".format(date))
+     # print("ballon/clients".format(id_client), "ballon/{0}/date".format(id_client))
+      self.client.publish("client:{0}".format(id_client), "{0}".format(id_client))
+      self.client.publish("topic : ballon/{0}".format(id_client), "message : {0}{1}".format(date,destDir))
 
       self.client.subscribe("ballon/{0}/cmd/#".format(id_client))
       self.client.subscribe("ballon/cmd")
@@ -194,16 +194,33 @@ class MqttCmd():
    def on_message(le_client, donnee, message):
       self = le_client.cmd
       sujet = message.topic
-      cmd = message.payload.decode("utf-8")
+      toutelacommande = message.payload.decode("utf-8")
+      cmd = toutelacommande.split("=")
       print("message: {0}/{1} {2}".format(message.topic, cmd, str(self)))
-      if cmd == 'stop':
+      if cmd[0] == 'stop':
          self.client.publish("ballon/{0}/status".format(id_client), "stop received")
          self.over = True
          self.close()
-      elif cmd == 'sequence':
-         self.client.publish("ballon/{0}/status".format(id_client), "snap for {0} with index {1} received".format(id_client, self.photo.indexPhoto))
+      if cmd[0] == 'sequence':
+         self.client.publish("ballon/{0}/status".format(id_client), "{0} received sequence order with index {1}".format(id_client, self.photo.indexPhoto))
          self.photo.snapAll()
          self.client.publish("ballon/{0}/status".format(id_client), "snap {0} DONE for {1}".format(self.photo.indexPhoto, id_client))
+      if cmd[0] == 'photo':
+         if len(cmd) != 2:
+            self.client.publish("ballon/{0}/status".format(id_client), "error: {0} photo without number".format(id_client))
+         else:
+            try:
+               nbPhotos=int(cmd[1])
+               self.client.publish("ballon/{0}/status".format(id_client), "{0} received photo order index={1} count={2}".format(id_client, self.photo.indexPhoto, nbPhotos))
+               for ind in range(nbPhotos):
+                  self.photo.snapAll()
+               self.client.publish("ballon/{0}/status".format(id_client), "{0} photo count={1} DONE".format(id_client, nbPhotos))
+            except Exception as e:
+               self.client.publish("ballon/{0}/status".format(id_client), "{0} error {1} photo, incorrect value given={2}".format(id_client, str(e), cmd[1]))
+      if cmd[0] == 'erase':
+         os.system("rm -rf {0}".format(self.photo.destDir))
+      if cmd[0] == 'eraseAll':
+         os.system("rm -rf /home/pi/image-*")
 
    def __str__(self):
       return "MqttClient {0}".format(self.id_client)
