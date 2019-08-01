@@ -163,7 +163,6 @@ class MqttCmd():
       #self.client.publish("heure/2", "{0}".format(self.temps))
 
       self.client.subscribe("ballon/{0}/cmd/#".format(id_client))
-      self.client.subscribe("ballon/cmd/#".format(id_client))
 
    def close(self):
       self.client.publish("ballon/close".format(self.id_client), "{0}".format(self.id_client))
@@ -210,16 +209,13 @@ class MqttCmd():
 def main():
    photo = Photo(destDir, sdDir)
    mqtt = MqttCmd(getMachineName(), mqtt_server, photo)
-   sys.stdout.flush()
 
    if nombrePhotos > 0:
       for i in range(nombrePhotos):
          photo.snapAll()
-         sys.stdout.flush()
    else:
       while not mqtt.over:
          sleep(1)
-         sys.stdout.flush()
 
 if __name__ == "__main__":
     main()

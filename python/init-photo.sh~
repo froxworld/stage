@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# Configuration
+DOSSIER_PREFIX="/home/pi/image"
+APPLICATION=/home/pi/stage/python/photo.py
+SDCARD_PREFIX=/media/pi/CLEUSB/image
+NB_PHOTOS=0
+
+# Installation
+
+CHEMIN=$(date +"-%d-%m-%y-%H-%M-%S")
+DOSSIER="${DOSSIER_PREFIX}${CHEMIN}"
+SDCARD="${SDCARD_PREFIX}/session${CHEMIN}"
+
+sleep 10
+
+test -d "${SDCARD_PREFIX}" || sudo mkdir -p "${SDCARD_PREFIX}"
+test -d "${SDCARD}"        || sudo mkdir -p "${SDCARD}"
+sudo chmod -R 777  ${SDCARD}
+
+test -d "${DOSSIER}" || mkdir -p ${DOSSIER}
+
