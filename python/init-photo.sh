@@ -1,9 +1,10 @@
 #!/bin/bash
 
 # Configuration
-DOSSIER_PREFIX="/home/pi/image"
+DOSSIER_PREFIX="/home/pi/"
 INIT_SCRIPT=/home/pi/stage/python/init-photo.sh
 APPLICATION=/home/pi/stage/python/photo.py
+SESSION_CONFIG=/home/pi/session-config.sh
 SDCARD_PREFIX=/media/pi/CLEUSB/image
 NB_PHOTOS=0
 NB_CAMERA=3
@@ -12,10 +13,6 @@ NB_CAMERA=3
 
 initNeededFiles() {
     sleep 10
-
-    CHEMIN=$(date +"-%d-%m-%y-%H-%M-%S")
-    DOSSIER="${DOSSIER_PREFIX}${CHEMIN}"
-    SDCARD="${SDCARD_PREFIX}/session${CHEMIN}"
 
     test -d "${SDCARD_PREFIX}" || sudo mkdir -p "${SDCARD_PREFIX}"
     test -d "${SDCARD}"        || sudo mkdir -p "${SDCARD}"
@@ -31,16 +28,21 @@ waitForServer() {
 }
 
 syncClientFiles() {
+    scp ballonserver:${SESSION_CONFIG} ${SESSION_CONFIG}
     scp ballonserver:${INIT_SCRIPT} ${INIT_SCRIPT}
     scp ballonserver:${APPLICATION} ${APPLICATION}
 }
 
 syncPhotoOnServer() {
     (
-	while sleep 60; do
-	    rsync -auv "${DOSSIER}" ballonserver:${DOSSIER_PREFIX}/
+	while sleep 5; do
+	    rsync -auv "${DOSSIER}" ballonserver:${DOSSIER_PREFIX}
 	done
-    ) &
+    ) 2>&1 > /dev/null &
+}
+
+syncDateTimeFromServer() {
+    sudo date -s "$(ssh ballonserver date --rfc-3339=ns )"
 }
 
 launchPhoto() {
