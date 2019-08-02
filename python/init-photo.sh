@@ -8,7 +8,7 @@ SESSION_CONFIG=/home/pi/session-config.sh
 CLEUSB_LOCATION=/media/pi/CLEUSB
 CLEUSB_PREFIX=${CLEUSB_LOCATION}/
 NB_PHOTOS=0   #si le nombre de photo = 0 alors on passe en Mqtt de photo.py
-NB_CAMERA=3
+NB_CAMERA=1
 # CLEUSB = /home/pi/
 
 # Installation

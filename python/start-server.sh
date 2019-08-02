@@ -7,7 +7,7 @@ source ${INIT_SCRIPT}
 waitForServer 
 
 cat > ${SESSION_CONFIG} <<EOF
-    CHEMIN=$(date +"image-%d-%m-%y-%H-%M-%S")
+    CHEMIN=$(date +"image-%y-%m-%d_%Hh%Mm%S")
     DOSSIER="${DOSSIER_PREFIX}\${CHEMIN}"
     if test -d "${CLEUSB_PREFIX}"; then
         echo "SDcard ${CLEUSB_PREFIX} exists"

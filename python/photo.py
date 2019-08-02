@@ -54,43 +54,46 @@ class Photo():
       (True,  True,  False)   ## CAM 4
    )
 
-   def __init__(self, destDir, sdDir):
+   def __init__(self, cameraCount, destDir, sdDir):
       self.indexPhoto = 0
       self.destDir = destDir
       self.sdDir = sdDir
+      self.cameraCount = cameraCount
       self.initHard()
 
    @staticmethod
    def initHard():
-      # desactivation des warnings
-      gp.setwarnings(False)
-      gp.setmode(gp.BOARD)
-	
-      #configuration des ports 7,11,12, 15, 16, 21, 22
-      gp.setup(7, gp.OUT)
-      gp.setup(11, gp.OUT)
-      gp.setup(12, gp.OUT)
-      gp.setup(15, gp.OUT)
-      gp.setup(16, gp.OUT)
-      gp.setup(21, gp.OUT)
-      gp.setup(22, gp.OUT)
-	
-      #configuration des sorties
-      gp.output(11, True)
-      gp.output(12, True)
-      gp.output(15, True)
-      gp.output(16, True)
-      gp.output(21, True)
-      gp.output(22, True)
+      if self.cameraCount > 1:
+        # desactivation des warnings
+        gp.setwarnings(False)
+        gp.setmode(gp.BOARD)
+
+        #configuration des ports 7,11,12, 15, 16, 21, 22
+        gp.setup(7, gp.OUT)
+        gp.setup(11, gp.OUT)
+        gp.setup(12, gp.OUT)
+        gp.setup(15, gp.OUT)
+        gp.setup(16, gp.OUT)
+        gp.setup(21, gp.OUT)
+        gp.setup(22, gp.OUT)
+
+        #configuration des sorties
+        gp.output(11, True)
+        gp.output(12, True)
+        gp.output(15, True)
+        gp.output(16, True)
+        gp.output(21, True)
+        gp.output(22, True)
 
    def setCam(self, camid):
-      gp.output(7,  self.cams[camid][0])
-      gp.output(11, self.cams[camid][1])
-      gp.output(12, self.cams[camid][2])
+      if self.cameraCount > 1:
+         gp.output(7,  self.cams[camid][0])
+         gp.output(11, self.cams[camid][1])
+         gp.output(12, self.cams[camid][2])
 
    # methode de capture des images
    def capture(self, index, cam):
-    nom = self.destDir + '/camera{0}_{1}.jpg'.format(cam, self.indexPhoto)
+    nom = self.destDir + '/photo-{0}_cam-{1}.jpg'.format(self.indexPhoto, cam)
 
     # deuxieme essai avec des parametre non de base
     # reglages iso 200, awb balance des blancs auto, ex exposition auto , -a heure et date 20:09:33 10/12/2019
@@ -111,27 +114,22 @@ class Photo():
        os.system(cmdCle)
 
    def snapAll(self):
-        self.setCam(1)
-	#lancement de la prise de capture d'image pour la camera 4
-        self.capture(self.indexPhoto, (cameraID*cameraCount))
+      self.setCam(1)
+      self.capture(self.indexPhoto, (cameraID*cameraCount))
 
+      if self.cameraCount > 1:
         self.setCam(2)
-	#idem pour la 5  ( au milieu)
         self.capture(self.indexPhoto, (cameraID*cameraCount)+1)
 
+      if self.cameraCount > 2:
         self.setCam(3)
-	#idem pour la 6
         self.capture(self.indexPhoto, (cameraID*cameraCount)+2)
 
-        self.indexPhoto += 1
-
-        #gp.output(7, True)
-        #gp.output(11, True)
-        #gp.output(12, False)
-        #capture(4,i)
-        # temporisation de deux secondes avant de reprendre des photos
-        #sleep(2)
-        #iso = iso+1
+      if self.cameraCount > 3:
+        self.setCam(4)
+        self.capture(self.indexPhoto, (cameraID*cameraCount)+3)
+        
+      self.indexPhoto += 1
 
    def __del__(self):
       #fermeture des ports pour eviter les bugs en relançant une autre fois le programme
