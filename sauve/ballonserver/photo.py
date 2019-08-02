@@ -160,16 +160,16 @@ class MqttCmd():
     
       #  publication de donnee "topic", "contenu du topic "
       date = strftime("%a, %d %b %Y %H:%M:%S +0000", gmtime())
-      print("ballon/clients".format(id_client), "ballon/{0}/date".format(id_client))
-      self.client.publish("client:{0} repertoire:{1}".format(id_client, destDir), "client:{0} repertoire:{1}".format(id_client, destDir)
-      self.client.publish("{0}/date".format(id_client), "{0}".format(date))
+     # print("ballon/clients".format(id_client), "ballon/{0}/date".format(id_client))
+      self.client.publish("client:{0}".format(id_client), "{0}".format(id_client))
+      self.client.publish("topic : ballon/{0}".format(id_client), "message : {0}{1}".format(date,destDir))
 
       self.client.subscribe("ballon/{0}/cmd/#".format(id_client))
       self.client.subscribe("ballon/cmd")
 
    def close(self):
       self.client.publish("ballon/close".format(self.id_client), "{0}".format(self.id_client))
-      self.client.loop_stop()  # fin de la boucle
+      self.client.loop_stop()  # finb de la boucle
       self.client.disconnect()  # deconnection
 
    @staticmethod
@@ -194,16 +194,20 @@ class MqttCmd():
    def on_message(le_client, donnee, message):
       self = le_client.cmd
       sujet = message.topic
+      test = message
+      print(test)
       cmd = message.payload.decode("utf-8")
       print("message: {0}/{1} {2}".format(message.topic, cmd, str(self)))
       if cmd == 'stop':
-         self.client.publish("ballon/{0}/status".format(id_client), "stop received")
+         self.client.publish("ballon{0}: stop".format(id_client), "stop received")
          self.over = True
          self.close()
-      elif cmd == 'sequence':
-         self.client.publish("ballon/{0}/status".format(id_client), "snap for {0} with index {1} received".format(id_client, self.photo.indexPhoto))
+      if cmd == 'sequence':
+         self.client.publish("ballon{0}/photo".format(id_client), "camera{0}_{1}.jpg".format(id_client, self.photo.indexPhoto))
          self.photo.snapAll()
-         self.client.publish("ballon/{0}/status".format(id_client), "snap {0} DONE for {1}".format(self.photo.indexPhoto, id_client))
+         #self.client.publish("ballon/{0}/status".format(id_client), "snap {0} DONE for {1}".format(self.photo.indexPhoto, id_client))
+      if cmd == 'photo':
+         self.client.publish("ballon{0}/photo".format(id_client),"vdwfdw")
 
    def __str__(self):
       return "MqttClient {0}".format(self.id_client)
