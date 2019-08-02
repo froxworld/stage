@@ -28,6 +28,6 @@ initNeededFiles
 # Lance le client sur le serveur
 launchPhoto 1 &
 
-while sleep 10; do
-     mosquitto_pub -h 192.168.66.5 -t 'ballon/cmd' -m 'sequence'
-done
+#while sleep 10; do
+#     mosquitto_pub -h 192.168.66.5 -t 'ballon/cmd' -m 'sequence'
+#done

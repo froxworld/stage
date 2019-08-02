@@ -89,9 +89,8 @@ class Photo():
       gp.output(12, self.cams[camid][2])
 
    # methode de capture des images
-   def capture(self, cam):
+   def capture(self, index, cam):
     nom = self.destDir + '/camera{0}_{1}.jpg'.format(cam, self.indexPhoto)
-    self.indexPhoto += 1
 
     # deuxieme essai avec des parametre non de base
     # reglages iso 200, awb balance des blancs auto, ex exposition auto , -a heure et date 20:09:33 10/12/2019
@@ -114,15 +113,17 @@ class Photo():
    def snapAll(self):
         self.setCam(1)
 	#lancement de la prise de capture d'image pour la camera 4
-        self.capture((cameraID*cameraCount))
+        self.capture(self.indexPhoto, (cameraID*cameraCount))
 
         self.setCam(2)
 	#idem pour la 5  ( au milieu)
-        self.capture((cameraID*cameraCount)+1)
+        self.capture(self.indexPhoto, (cameraID*cameraCount)+1)
 
         self.setCam(3)
 	#idem pour la 6
-        self.capture((cameraID*cameraCount)+2)
+        self.capture(self.indexPhoto, (cameraID*cameraCount)+2)
+
+        self.indexPhoto += 1
 
         #gp.output(7, True)
         #gp.output(11, True)
@@ -160,12 +161,15 @@ class MqttCmd():
     
       #  publication de donnee "topic", "contenu du topic "
       date = strftime("%a, %d %b %Y %H:%M:%S +0000", gmtime())
-      print("ballon/clients".format(id_client), "ballon/{0}/date".format(id_client))
-      self.client.publish("ballon/status",  "{0}".format(id_client))
-      self.client.publish("ballon/{0}/status",  "client:{0} repertoire:{1}".format(id_client, destDir))
+      print("ballon/clients".format(self.id_client), "ballon/{0}/date".format(self.id_client))
+      self.client.publish("ballon/status",  "{0}".format(self.id_client))
+      self.client.publish("ballon/{0}/status",  "client:{0} repertoire:{1}".format(self.id_client, destDir))
       self.client.publish("ballon/{0}/status",  "{0}".format(date))
 
-      self.client.subscribe("ballon/{0}/cmd/#".format(id_client))
+      # Creation d'un canal (topic) d'écoute spécifique au client
+      self.client.subscribe("ballon/{0}/cmd/#".format(self.id_client))
+
+      # Ecoute sur un canal commun à tous les clients.
       self.client.subscribe("ballon/cmd")
 
    def close(self):
@@ -199,29 +203,33 @@ class MqttCmd():
       cmd = toutelacommande.split("=")
       print("message: {0}/{1} {2}".format(message.topic, cmd, str(self)))
       if cmd[0] == 'stop':
-         self.client.publish("ballon/{0}/status".format(id_client), "stop received")
+         self.client.publish("ballon/{0}/status".format(self.id_client), "stop received")
          self.over = True
          self.close()
       if cmd[0] == 'sequence':
-         self.client.publish("ballon/{0}/status".format(id_client), "{0} received sequence order with index {1}".format(id_client, self.photo.indexPhoto))
+         self.client.publish("ballon/{0}/status".format(self.id_client), "{0} received sequence order with index {1}".format(self.id_client, self.photo.indexPhoto))
          self.photo.snapAll()
-         self.client.publish("ballon/{0}/status".format(id_client), "snap {0} DONE for {1}".format(self.photo.indexPhoto, id_client))
+         self.client.publish("ballon/{0}/status".format(self.id_client), "snap {0} DONE for {1}".format(self.photo.indexPhoto, self.id_client))
       if cmd[0] == 'photo':
          if len(cmd) != 2:
-            self.client.publish("ballon/{0}/status".format(id_client), "error: {0} photo without number".format(id_client))
+            self.client.publish("ballon/{0}/status".format(self.id_client), "error: {0} photo without number".format(self.id_client))
          else:
             try:
                nbPhotos=int(cmd[1])
-               self.client.publish("ballon/{0}/status".format(id_client), "{0} received photo order index={1} count={2}".format(id_client, self.photo.indexPhoto, nbPhotos))
+               self.client.publish("ballon/{0}/status".format(self.id_client), "{0} received photo order index={1} count={2}".format(self.id_client, self.photo.indexPhoto, nbPhotos))
                for ind in range(nbPhotos):
                   self.photo.snapAll()
-               self.client.publish("ballon/{0}/status".format(id_client), "{0} photo count={1} DONE".format(id_client, nbPhotos))
+               self.client.publish("ballon/{0}/status".format(self.id_client), "{0} photo count={1} DONE".format(self.id_client, nbPhotos))
             except Exception as e:
-               self.client.publish("ballon/{0}/status".format(id_client), "{0} error {1} photo, incorrect value given={2}".format(id_client, str(e), cmd[1]))
+               self.client.publish("ballon/{0}/status".format(self.id_client), "{0} error {1} photo, incorrect value given={2}".format(self.id_client, str(e), cmd[1]))
       if cmd[0] == 'erase':
          os.system("rm -rf {0}".format(self.photo.destDir))
+         self.over = True
+         self.close()
       if cmd[0] == 'eraseAll':
          os.system("rm -rf /home/pi/image-*")
+         self.over = True
+         self.close()
 
    def __str__(self):
       return "MqttClient {0}".format(self.id_client)
