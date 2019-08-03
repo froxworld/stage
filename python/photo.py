@@ -53,14 +53,14 @@ class Photo():
       (False, True,  False), ## CAM 3
       (True,  True,  False)   ## CAM 4
    )
-
+   #initilisation des repertoires nombre de cameras repertoire de destination et repertoire de la cleUsb
    def __init__(self, cameraCount, destDir, sdDir):
       self.indexPhoto = 0
       self.destDir = destDir
       self.sdDir = sdDir
       self.cameraCount = cameraCount
       self.initHard()
-
+   #mise en place du multiplexeur des cameras et des Gpio
    @staticmethod
    def initHard():
       if self.cameraCount > 1:
@@ -155,16 +155,16 @@ class MqttCmd():
 
       self.client.connect(self.repartiteur)  # connection au repartiteur
       self.client.loop_start()  # debut de la boucle
-      print("log : Server started")
+      print("log : Serveur demarré")
     
-      #  publication de donnee "topic", "contenu du topic "
+      #  publication de donnee "topic", "message "
       date = strftime("%a, %d %b %Y %H:%M:%S +0000", gmtime())
-      print("ballon/clients".format(self.id_client), "ballon/{0}/date".format(self.id_client))
+      print("ballon/clients{0}".format(self.id_client), "ballon/{0}/date".format(self.id_client))
       self.client.publish("ballon/status",  "{0}".format(self.id_client))
       self.client.publish("ballon/{0}/status",  "client:{0} repertoire:{1}".format(self.id_client, destDir))
       self.client.publish("ballon/{0}/status",  "{0}".format(date))
 
-      # Creation d'un canal (topic) d'écoute spécifique au client
+      # Ecoute spécifique d'un client
       self.client.subscribe("ballon/{0}/cmd/#".format(self.id_client))
 
       # Ecoute sur un canal commun à tous les clients.
@@ -201,25 +201,25 @@ class MqttCmd():
       cmd = toutelacommande.split("=")
       print("message: {0}/{1} {2}".format(message.topic, cmd, str(self)))
       if cmd[0] == 'stop':
-         self.client.publish("ballon/{0}/status".format(self.id_client), "stop received")
+         self.client.publish("ballon/{0}/status".format(self.id_client), "arret de reception")
          self.over = True
          self.close()
       if cmd[0] == 'sequence':
-         self.client.publish("ballon/{0}/status".format(self.id_client), "{0} received sequence order with index {1}".format(self.id_client, self.photo.indexPhoto))
+         self.client.publish("ballon/{0}/status".format(self.id_client), "le client :{0} prend la photo{1}".format(self.id_client, self.photo.indexPhoto))
          self.photo.snapAll()
-         self.client.publish("ballon/{0}/status".format(self.id_client), "snap {0} DONE for {1}".format(self.photo.indexPhoto, self.id_client))
+         self.client.publish("ballon/{0}/status".format(self.id_client), "photo{0} prise par le client :{1}".format(self.photo.indexPhoto, self.id_client))
       if cmd[0] == 'photo':
          if len(cmd) != 2:
-            self.client.publish("ballon/{0}/status".format(self.id_client), "error: {0} photo without number".format(self.id_client))
+            self.client.publish("ballon/{0}/status".format(self.id_client), "erreur: sur prise de photo N°{0}".format(self.id_client))
          else:
             try:
                nbPhotos=int(cmd[1])
-               self.client.publish("ballon/{0}/status".format(self.id_client), "{0} received photo order index={1} count={2}".format(self.id_client, self.photo.indexPhoto, nbPhotos))
+               self.client.publish("ballon/{0}/status".format(self.id_client), "le client :{0} a déjà fait {1} photo sur les {2}".format(self.id_client, self.photo.indexPhoto, nbPhotos))
                for ind in range(nbPhotos):
                   self.photo.snapAll()
-               self.client.publish("ballon/{0}/status".format(self.id_client), "{0} photo count={1} DONE".format(self.id_client, nbPhotos))
+               self.client.publish("ballon/{0}/status".format(self.id_client), "le client :{0} a fini ses {1} photos".format(self.id_client, nbPhotos))
             except Exception as e:
-               self.client.publish("ballon/{0}/status".format(self.id_client), "{0} error {1} photo, incorrect value given={2}".format(self.id_client, str(e), cmd[1]))
+               self.client.publish("ballon/{0}/status".format(self.id_client), "erreur : {1} sur le client :{0},le parametre passé est {2}".format(self.id_client, str(e), cmd[1]))
       if cmd[0] == 'erase':
          os.system("rm -rf {0}".format(self.photo.destDir))
          self.over = True

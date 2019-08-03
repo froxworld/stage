@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Charge le fichier et execute les commandes
+# Charge le fichier init-photo et execute les commandes initNeededFiles et launchPtoto
 INIT_SCRIPT=/home/pi/stage/python/init-photo.sh
 source ${INIT_SCRIPT}
 
