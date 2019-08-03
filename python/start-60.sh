@@ -22,4 +22,4 @@ initNeededFiles
 syncPhotoOnServer
 
 # Lance le client sur le serveur
-launchPhoto 3 
+launchPhoto 1 

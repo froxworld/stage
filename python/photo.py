@@ -27,10 +27,6 @@ if cameraCount < 1 or cameraCount > 4:
    print("{0}: cameraCount incorrect (entre 1 et 4)".format(sys.argv[0]))
    sys.exit(1)
 
-if cameraID > cameraCount:
-   print("{0}: CameraID incorrect (entre 0 et nbre de camera)".format(sys.argv[0]))
-   sys.exit(1)
-
 id_client = '1'
 mqtt_server = '192.168.66.5'
 
@@ -60,9 +56,9 @@ class Photo():
       self.sdDir = sdDir
       self.cameraCount = cameraCount
       self.initHard()
+
    #mise en place du multiplexeur des cameras et des Gpio
-   @staticmethod
-   def initHard():
+   def initHard(self):
       if self.cameraCount > 1:
         # desactivation des warnings
         gp.setwarnings(False)
@@ -113,22 +109,33 @@ class Photo():
        cmdCle ='cp {0} {1}'.format(nom, self.sdDir)
        os.system(cmdCle)
 
-   def snapAll(self):
+   def snapTime(self, time):
+      nom = self.destDir + '/photo-{0}_cam-{1}.jpg'.format(self.indexPhoto, cameraID*self.cameraCount)
+      cmdImage = 'raspistill {0} -ISO {1} -br auto  -awb auto --raw -ex {2} -a 12 -q 100 -t {3} -o {4} -e jpg'.format(self.preview, self.iso, self.exposition, time, nom)
+      print("Make picture: " + cmdImage)
+      os.system(cmdImage)
+      self.indexPhoto += 1
+
+   def snapAll(self, index):
+      print('snap prend des photo ({0})'.format(index))
+      if index == -1:
+         index = self.indexPhoto
+
       self.setCam(1)
-      self.capture(self.indexPhoto, (cameraID*cameraCount))
+      self.capture(index, (cameraID*self.cameraCount))
 
       if self.cameraCount > 1:
         self.setCam(2)
-        self.capture(self.indexPhoto, (cameraID*cameraCount)+1)
+        self.capture(index, (cameraID*self.cameraCount)+1)
 
       if self.cameraCount > 2:
         self.setCam(3)
-        self.capture(self.indexPhoto, (cameraID*cameraCount)+2)
+        self.capture(index, (cameraID*self.cameraCount)+2)
 
       if self.cameraCount > 3:
         self.setCam(4)
-        self.capture(self.indexPhoto, (cameraID*cameraCount)+3)
-        
+        self.capture(index, (cameraID*self.cameraCount)+3)
+
       self.indexPhoto += 1
 
    def __del__(self):
@@ -161,8 +168,8 @@ class MqttCmd():
       date = strftime("%a, %d %b %Y %H:%M:%S +0000", gmtime())
       print("ballon/clients{0}".format(self.id_client), "ballon/{0}/date".format(self.id_client))
       self.client.publish("ballon/status",  "{0}".format(self.id_client))
-      self.client.publish("ballon/{0}/status",  "client:{0} repertoire:{1}".format(self.id_client, destDir))
-      self.client.publish("ballon/{0}/status",  "{0}".format(date))
+      self.client.publish("ballon/{0}/status".format(self.id_client),  "client:{0} repertoire:{1}".format(self.id_client, self.photo.destDir))
+      self.client.publish("ballon/{0}/status".format(self.id_client),  "{0}".format(date))
 
       # Ecoute spécifique d'un client
       self.client.subscribe("ballon/{0}/cmd/#".format(self.id_client))
@@ -205,8 +212,11 @@ class MqttCmd():
          self.over = True
          self.close()
       if cmd[0] == 'sequence':
-         self.client.publish("ballon/{0}/status".format(self.id_client), "le client :{0} prend la photo{1}".format(self.id_client, self.photo.indexPhoto))
-         self.photo.snapAll()
+         self.client.publish("ballon/{0}/status".format(self.id_client), "le client :{0} prend la photo{1}".format(self.id_client, self.photo.indexPhoto))         
+         if len(cmd) == 2:
+            self.photo.snapAll(int(cmd[1]))
+         else:
+            self.photo.snapAll(-1)
          self.client.publish("ballon/{0}/status".format(self.id_client), "photo{0} prise par le client :{1}".format(self.photo.indexPhoto, self.id_client))
       if cmd[0] == 'photo':
          if len(cmd) != 2:
@@ -214,12 +224,17 @@ class MqttCmd():
          else:
             try:
                nbPhotos=int(cmd[1])
-               self.client.publish("ballon/{0}/status".format(self.id_client), "le client :{0} a déjà fait {1} photo sur les {2}".format(self.id_client, self.photo.indexPhoto, nbPhotos))
                for ind in range(nbPhotos):
-                  self.photo.snapAll()
+                  self.photo.snapAll(-1)
+                  self.client.publish("ballon/{0}/status".format(self.id_client), "le client :{0} a déjà fait {1} photo sur les {2}".format(self.id_client, ind+1, nbPhotos))
                self.client.publish("ballon/{0}/status".format(self.id_client), "le client :{0} a fini ses {1} photos".format(self.id_client, nbPhotos))
             except Exception as e:
                self.client.publish("ballon/{0}/status".format(self.id_client), "erreur : {1} sur le client :{0},le parametre passé est {2}".format(self.id_client, str(e), cmd[1]))
+      if cmd[0] == 'time':
+         if (len(cmd) == 2):
+            timeValue = int(cmd[1])
+            self.photo.snapTime(timeValue)
+            self.client.publish("ballon/{0}/status".format(self.id_client), "le client :{0} a pris sa photo en {1} secondes".format(self.id_client,timeValue/1000))
       if cmd[0] == 'erase':
          os.system("rm -rf {0}".format(self.photo.destDir))
          self.over = True
@@ -234,13 +249,13 @@ class MqttCmd():
 
 #programme principal  pour la capture des images
 def main():
-   photo = Photo(destDir, sdDir)
+   photo = Photo(cameraCount, destDir, sdDir)
    mqtt = MqttCmd(getMachineName(), mqtt_server, photo)
    sys.stdout.flush()
 
    if nombrePhotos > 0:
       for i in range(nombrePhotos):
-         photo.snapAll()
+         photo.snapAll(-1)
          sys.stdout.flush()
    else:
       while not mqtt.over:

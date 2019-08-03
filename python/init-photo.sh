@@ -67,5 +67,6 @@ launchPhoto() {
     while sleep 1; do
 	python3 "${APPLICATION}" "${DOSSIER}" "${CLEUSB}" "${NB_PHOTOS}" ${PI_ID} "${NB_CAMERA}" 2>&1 > ${LOG_FILE}.${PI_ID}
         initNeededFiles
+	syncClientFiles
     done
 }
