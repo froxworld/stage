@@ -19,7 +19,7 @@ source ${SESSION_CONFIG}
 initNeededFiles
 
 # Synchronise les fichiers image en arrière plan
-syncPhotoOnServer
+syncPhotoOnServer 3
 
 # Lance le client sur le serveur
-launchPhoto 1 
+launchPhoto 3 

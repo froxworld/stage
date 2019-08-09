@@ -37,7 +37,7 @@ def getMachineName():
 
 class Photo():
    iso = 100
-   temps = 100
+   temps = 1
    exposition = 'auto'
    #preview = '--preview 500:300:500:300'
    preview = '--nopreview'
@@ -89,7 +89,7 @@ class Photo():
 
    # methode de capture des images
    def capture(self, index, cam):
-    nom = self.destDir + '/photo-{0}_cam-{1}.jpg'.format(self.indexPhoto, cam)
+    nom = self.destDir + '/photo-{0}_cam-{1}.jpg'.format(index, cam)
 
     # deuxieme essai avec des parametre non de base
     # reglages iso 200, awb balance des blancs auto, ex exposition auto , -a heure et date 20:09:33 10/12/2019
@@ -99,9 +99,9 @@ class Photo():
     # cmd = 'raspistill -ISO 200 -awb auto -ex auto -a 12 -q 100 -t 500 -o {0}{1}{2} -e jpg -x WhiteBalance -x GPS.GPSLatitude={3} -x GPS.GPSLongitude={4} -x GPS.GPSAltitude={5}'.format()
 
     if self.indexPhoto == 1:
-       cmdImage = 'raspistill {0} -ISO {1} -br auto  -awb auto --raw -ex {2} -a 12 -q 100 -t {3} -o {4} -e jpg'.format(self.preview, self.iso, self.exposition, self.temps, nom)
+       cmdImage = 'raspistill {0} -x time={3} -ISO {1} -br auto  -awb auto --raw -ex {2} -a 12 -q 100 -t {3} -o {4} -e jpg'.format(self.preview, self.iso, self.exposition, self.temps, nom)
     else:
-       cmdImage = 'raspistill {0} -e jpg -o {1} -t {2}'.format(self.preview, nom, self.temps)
+       cmdImage = 'raspistill {0} -x time={2} -e jpg -o {1} -t {2}'.format(self.preview, nom, self.temps)
     print(cmdImage)
     os.system(cmdImage)
 
@@ -110,11 +110,15 @@ class Photo():
        os.system(cmdCle)
 
    def snapTime(self, time):
-      nom = self.destDir + '/photo-{0}_cam-{1}.jpg'.format(self.indexPhoto, cameraID*self.cameraCount)
-      cmdImage = 'raspistill {0} -ISO {1} -br auto  -awb auto --raw -ex {2} -a 12 -q 100 -t {3} -o {4} -e jpg'.format(self.preview, self.iso, self.exposition, time, nom)
-      print("Make picture: " + cmdImage)
-      os.system(cmdImage)
-      self.indexPhoto += 1
+      self.temps  = time
+      #self.capture(self.indexPhoto, cameraID*self.cameraCount)
+      #self.indexPhoto+=1
+
+      #nom = self.destDir + '/photo-{0}_cam-{1}.jpg'.format(self.indexPhoto, cameraID*self.cameraCount)
+      #cmdImage = 'raspistill {0} -ISO {1} -br auto  -awb auto --raw -ex {2} -a 12 -q 100 -t {3} -o {4} -e jpg'.format(self.preview, self.iso, self.exposition, self.temps, nom)
+      #print("Make picture: " + cmdImage)
+      #os.system(cmdImage)
+      #self.indexPhoto += 1
 
    def snapAll(self, index):
       print('snap prend des photo ({0})'.format(index))

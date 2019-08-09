@@ -26,7 +26,7 @@ source ${SESSION_CONFIG}
 initNeededFiles
 
 # Lance le client sur le serveur
-launchPhoto 1 &
+launchPhoto 0  &
 
 #while sleep 10; do
 #     mosquitto_pub -h 192.168.66.5 -t 'ballon/cmd' -m 'sequence'

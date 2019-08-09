@@ -2,8 +2,10 @@
 
 # Configuration
 DOSSIER_PREFIX="/home/pi/"
-INIT_SCRIPT=/home/pi/stage/python/init-photo.sh
-APPLICATION=/home/pi/stage/python/photo.py
+DOSSIER_GIT=/home/pi/stage/python
+INIT_SCRIPT=${DOSSIER_GIT}/init-photo.sh
+START_SCRIPT=${DOSSIER_GIT}/start-*.sh
+APPLICATION=${DOSSIER_GIT}/photo.py
 SESSION_CONFIG=/home/pi/session-config.sh
 CLEUSB_LOCATION=/media/pi/CLEUSB
 CLEUSB_PREFIX=${CLEUSB_LOCATION}/
@@ -40,13 +42,16 @@ waitForServer() {
 
 syncClientFiles() {
     scp ballonserver:${SESSION_CONFIG} ${SESSION_CONFIG}
-    scp ballonserver:${INIT_SCRIPT} ${INIT_SCRIPT}
-    scp ballonserver:${APPLICATION} ${APPLICATION}
+    scp ballonserver:${INIT_SCRIPT}    ${INIT_SCRIPT}
+    scp ballonserver:${APPLICATION}    ${APPLICATION}
+    scp "ballonserver:${START_SCRIPT}" ${DOSSIER_GIT}/
 }
 
 syncPhotoOnServer() {
+    local syncOffset=$(( ( $1 + 0 ) * 15 ))
     (
-	while sleep 5; do
+	sleep ${syncOffset}
+	while sleep $(( 3 * 60 )); do
 	    rsync -auv "${DOSSIER}" ballonserver:${DOSSIER_PREFIX}
 	    if test -d "${CLEUSB_PREFIX}"; then
 		rsync -auv "${DOSSIER}" "${CLEUSB_PREFIX}"
