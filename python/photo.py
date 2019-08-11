@@ -7,6 +7,7 @@ import RPi.GPIO as gp
 import os, sys
 import datetime
 import socket
+
 from time import sleep
 
 import paho.mqtt.client as mqtt  # import du client mqtt
@@ -21,7 +22,10 @@ destDir = sys.argv[1]
 sdDir = sys.argv[2]
 nombrePhotos = int(sys.argv[3])
 cameraID = int(sys.argv[4])
+
 cameraCount = int(sys.argv[5])
+lattitude = 0
+longitude = 0
 
 if cameraCount < 1 or cameraCount > 4:
    print("{0}: cameraCount incorrect (entre 1 et 4)".format(sys.argv[0]))
@@ -89,7 +93,10 @@ class Photo():
 
    # methode de capture des images
    def capture(self, index, cam):
-    nom = self.destDir + '/photo-{0}_cam-{1}.jpg'.format(index, cam)
+    global lattitude, longitude
+    basename = self.destDir + '/photo-{0}_cam-{1}'.format(index, cam)
+    nom = basename + '.jpg'
+    jsonName = basename + '.json'
 
     # deuxieme essai avec des parametre non de base
     # reglages iso 200, awb balance des blancs auto, ex exposition auto , -a heure et date 20:09:33 10/12/2019
@@ -105,20 +112,27 @@ class Photo():
     print(cmdImage)
     os.system(cmdImage)
 
+    jsonFile = open(jsonName, "w+")
+    jsonName.write('{ "name":"{0}", "lat":"{1}", "long":"{2}" }'.format(basename, lattitude, longitude))
+    jsonName.close()
+
+    if self.sdDir != "none":
+       cmdCle ='cp {0} {1}'.format(nom, self.sdDir)
+       os.system(cmdCle)
+
+   # methode de capture des images
+   def record(self, index):
+    nom = self.destDir + '/video-{0}.jpg'.format(index)
+    cmdImage = 'raspivid -o {0} -t 20000 '.format(nom)
+    print(cmdImage)
+    os.system(cmdImage)
+
     if self.sdDir != "none":
        cmdCle ='cp {0} {1}'.format(nom, self.sdDir)
        os.system(cmdCle)
 
    def snapTime(self, time):
       self.temps  = time
-      #self.capture(self.indexPhoto, cameraID*self.cameraCount)
-      #self.indexPhoto+=1
-
-      #nom = self.destDir + '/photo-{0}_cam-{1}.jpg'.format(self.indexPhoto, cameraID*self.cameraCount)
-      #cmdImage = 'raspistill {0} -ISO {1} -br auto  -awb auto --raw -ex {2} -a 12 -q 100 -t {3} -o {4} -e jpg'.format(self.preview, self.iso, self.exposition, self.temps, nom)
-      #print("Make picture: " + cmdImage)
-      #os.system(cmdImage)
-      #self.indexPhoto += 1
 
    def snapAll(self, index):
       print('snap prend des photo ({0})'.format(index))
@@ -181,6 +195,9 @@ class MqttCmd():
       # Ecoute sur un canal commun à tous les clients.
       self.client.subscribe("ballon/cmd")
 
+      # Ecoute sur un des GPS.
+      self.client.subscribe("ballon/gps")
+
    def close(self):
       self.client.publish("ballon/close".format(self.id_client), "{0}".format(self.id_client))
       self.client.loop_stop()  # fin de la boucle
@@ -202,51 +219,65 @@ class MqttCmd():
    @staticmethod
    def on_disconect(le_client, donnee, drapeaux, resultat_de_connection=0):
       print("Deconnection du client avec le code de retour ", resultat_de_connection)
-    
+
    # derniere methode on_message quand le client a souscrit
    @staticmethod
    def on_message(le_client, donnee, message):
+      global lattitude, longitude
       self = le_client.cmd
       sujet = message.topic
       toutelacommande = message.payload.decode("utf-8")
-      cmd = toutelacommande.split("=")
-      print("message: {0}/{1} {2}".format(message.topic, cmd, str(self)))
-      if cmd[0] == 'stop':
-         self.client.publish("ballon/{0}/status".format(self.id_client), "arret de reception")
-         self.over = True
-         self.close()
-      if cmd[0] == 'sequence':
-         self.client.publish("ballon/{0}/status".format(self.id_client), "le client :{0} prend la photo{1}".format(self.id_client, self.photo.indexPhoto))         
-         if len(cmd) == 2:
-            self.photo.snapAll(int(cmd[1]))
-         else:
-            self.photo.snapAll(-1)
-         self.client.publish("ballon/{0}/status".format(self.id_client), "photo{0} prise par le client :{1}".format(self.photo.indexPhoto, self.id_client))
-      if cmd[0] == 'photo':
-         if len(cmd) != 2:
-            self.client.publish("ballon/{0}/status".format(self.id_client), "erreur: sur prise de photo N°{0}".format(self.id_client))
-         else:
-            try:
-               nbPhotos=int(cmd[1])
-               for ind in range(nbPhotos):
-                  self.photo.snapAll(-1)
-                  self.client.publish("ballon/{0}/status".format(self.id_client), "le client :{0} a déjà fait {1} photo sur les {2}".format(self.id_client, ind+1, nbPhotos))
-               self.client.publish("ballon/{0}/status".format(self.id_client), "le client :{0} a fini ses {1} photos".format(self.id_client, nbPhotos))
-            except Exception as e:
-               self.client.publish("ballon/{0}/status".format(self.id_client), "erreur : {1} sur le client :{0},le parametre passé est {2}".format(self.id_client, str(e), cmd[1]))
-      if cmd[0] == 'time':
-         if (len(cmd) == 2):
-            timeValue = int(cmd[1])
-            self.photo.snapTime(timeValue)
-            self.client.publish("ballon/{0}/status".format(self.id_client), "le client :{0} a pris sa photo en {1} secondes".format(self.id_client,timeValue/1000))
-      if cmd[0] == 'erase':
-         os.system("rm -rf {0}".format(self.photo.destDir))
-         self.over = True
-         self.close()
-      if cmd[0] == 'eraseAll':
-         os.system("rm -rf /home/pi/image-*")
-         self.over = True
-         self.close()
+
+      if message.topic == "ballon/gps":
+         coordinates = toutelacommande.split(";")
+         lattitude = coordinates[0]
+         longitude = coordinates[1]
+
+      else:
+         cmd = toutelacommande.split("=")
+         print("message: {0}/{1} {2}".format(message.topic, cmd, str(self)))
+         # en faisant la commnade stop  on arete la prise de vue de photo
+         if cmd[0] == 'stop':
+            self.client.publish("ballon/{0}/status".format(self.id_client), "arret de reception")
+            self.over = True
+            self.close()
+         # on lance une prise de une photo
+         if cmd[0] == 'sequence':
+            self.client.publish("ballon/{0}/status".format(self.id_client), "le client :{0} prend la photo{1}".format(self.id_client, self.photo.indexPhoto))
+            if len(cmd) == 2:
+               self.photo.snapAll(int(cmd[1]))
+            else:
+               self.photo.snapAll(-1)
+            self.client.publish("ballon/{0}/status".format(self.id_client), "photo{0} prise par le client :{1}".format(self.photo.indexPhoto, self.id_client))
+         # on peut lancer une prise de vue avec plusieurs photo ex 'photo=20'
+         if cmd[0] == 'photo':
+            if len(cmd) != 2:
+               self.client.publish("ballon/{0}/status".format(self.id_client), "erreur: sur prise de photo N°{0}".format(self.id_client))
+            else:
+               try:
+                  nbPhotos=int(cmd[1])
+                  for ind in range(nbPhotos):
+                     self.photo.snapAll(-1)
+                     self.client.publish("ballon/{0}/status".format(self.id_client), "le client :{0} a déjà fait {1} photo sur les {2}".format(self.id_client, ind+1, nbPhotos))
+                  self.client.publish("ballon/{0}/status".format(self.id_client), "le client :{0} a fini ses {1} photos".format(self.id_client, nbPhotos))
+               except Exception as e:
+                  self.client.publish("ballon/{0}/status".format(self.id_client), "erreur : {1} sur le client :{0},le parametre passé est {2}".format(self.id_client, str(e), cmd[1]))
+         # si on veut changer le temps d'attente  avant de prendre une photo
+         if cmd[0] == 'time':
+            if (len(cmd) == 2):
+               timeValue = int(cmd[1])
+               self.photo.snapTime(timeValue)
+               self.client.publish("ballon/{0}/status".format(self.id_client), "le client :{0} a pris sa photo en {1} secondes".format(self.id_client,timeValue/1000))
+         # on peut effacer le repertoire de destination des photos
+         if cmd[0] == 'erase':
+            os.system("rm -rf {0}".format(self.photo.destDir))
+            self.over = True
+            self.close()
+         # on peut effacer l'ensemble des repertoire contenant des photos
+         if cmd[0] == 'eraseAll':
+            os.system("rm -rf /home/pi/image-*")
+            self.over = True
+            self.close()
 
    def __str__(self):
       return "MqttClient {0}".format(self.id_client)

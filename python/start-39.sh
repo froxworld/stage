@@ -21,5 +21,8 @@ initNeededFiles
 # Synchronise les fichiers image en arrière plan
 syncPhotoOnServer 2
 
+# Lance un programme qui surveille le GPS et publie la position avec MQTT sur ballon/gps
+python ${DOSSIER_GIT}/gps.py &
+
 # Lance le client sur le serveur
 launchPhoto 2
