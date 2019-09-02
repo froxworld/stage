@@ -93,7 +93,7 @@ class Photo():
          gp.output(12, self.cams[camid][2])
 
    # methode de capture des images
-   def capture(self, index, cam, take_miniature,numeroPhoto):
+   def capture(self, index, cam, take_miniature):
     global lattitude, longitude
     basename = self.destDir + '/photo-{0}_cam-{1}'.format(index, cam)
     nom =basename + '.jpg'
@@ -128,9 +128,8 @@ class Photo():
        nouveau_nom = self.destDir +'/mini_photo-{0}_cam-{1}.jpg'.format(index, cam)
        cv2.imwrite(nouveau_nom, img)
        # sauvegarde dans le dossier html pour le voir avec le telephone a l'adresse 192.168.66.5/image.hmtl
-       print('numero________{0}'.format(numeroPhoto))
-       web = '/home/pi/html/image{0}.jpg'.format(numeroPhoto)
-       cv2.imwrite(web, img)
+       publication_web = '~/html/image{0}.jpg'.format(numero)
+       cv2.imwrite(publication_web, img)
 
        
        
@@ -151,25 +150,25 @@ class Photo():
    def snapTime(self, time):
       self.temps  = time
 
-   def snapAll(self, index, take_miniature = False, numeroPhoto = 1):
+   def snapAll(self, index, take_miniature = False):
       print('snap prend des photo ({0})'.format(index))
       if index == -1:
          index = self.indexPhoto
 
       self.setCam(1)
-      self.capture(index, (cameraID*self.cameraCount), take_miniature, numeroPhoto)
+      self.capture(index, (cameraID*self.cameraCount), take_miniature)
 
       if self.cameraCount > 1:
         self.setCam(2)
-        self.capture(index, (cameraID*self.cameraCount)+1, take_miniature, numeroPhoto)
+        self.capture(index, (cameraID*self.cameraCount)+1, take_miniature)
 
       if self.cameraCount > 2:
         self.setCam(3)
-        self.capture(index, (cameraID*self.cameraCount)+2, take_miniature, numeroPhoto)
+        self.capture(index, (cameraID*self.cameraCount)+2, take_miniature)
 
       if self.cameraCount > 3:
         self.setCam(4)
-        self.capture(index, (cameraID*self.cameraCount)+3, take_miniature, numeroPhoto)
+        self.capture(index, (cameraID*self.cameraCount)+3, take_miniature)
 
       self.indexPhoto += 1
 
@@ -271,7 +270,7 @@ class MqttCmd():
             self.client.publish("ballon/{0}/status".format(self.id_client), "le client :{0} prend une video {1}".format(self.id_client, self.photo.indexPhoto))
             if len(cmd) == 3:
                self.photo.record(self.photo.indexPhoto, int(cmd[1]))
-
+               
             else:
                self.photo.record(self.photo.indexPhoto, -1)
             self.client.publish("ballon/{0}/status".format(self.id_client), "video {0} prise par le client :{1}".format(self.photo.indexPhoto, self.id_client))
@@ -281,17 +280,11 @@ class MqttCmd():
             else:
                try:
                   nbPhotos=int(cmd[1])
-
-                  numeroPhoto =0
                   for ind in range(nbPhotos):
-                      if ind > 0 and ind %5 ==0:
-                          print('numerophoto{0}'.format(numeroPhoto))
-                          numeroPhoto = numeroPhoto +1
-                          self.photo.snapAll(-1, True, numeroPhoto)
+                      if ind > 0 and ind %10 ==0:
+                          self.photo.snapAll(-1, True)
                       else:
                           self.photo.snapAll(-1)
-                      if numeroPhoto == 4:
-                          numeroPhoto = 0
                       self.client.publish("ballon/{0}/status".format(self.id_client), "le client :{0} a déjà fait {1} photo sur les {2}".format(self.id_client, ind+1, nbPhotos))
                   self.client.publish("ballon/{0}/status".format(self.id_client), "le client :{0} a fini ses {1} photos".format(self.id_client, nbPhotos))
                except Exception as e:

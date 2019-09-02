@@ -7,7 +7,6 @@ import RPi.GPIO as gp
 import os, sys
 import datetime
 import socket
-import cv2
 
 from time import sleep
 
@@ -93,10 +92,10 @@ class Photo():
          gp.output(12, self.cams[camid][2])
 
    # methode de capture des images
-   def capture(self, index, cam, take_miniature,numeroPhoto):
+   def capture(self, index, cam):
     global lattitude, longitude
     basename = self.destDir + '/photo-{0}_cam-{1}'.format(index, cam)
-    nom =basename + '.jpg'
+    nom = basename + '.jpg'
     jsonName = basename + '.json'
 
     # deuxieme essai avec des parametre non de base
@@ -120,20 +119,7 @@ class Photo():
     if self.sdDir != "none":
        cmdCle ='cp {0} {1}'.format(nom, self.sdDir)
        os.system(cmdCle)
-   
-    if take_miniature:
-       img = cv2.imread(nom)
-       img = cv2.resize(img, (320,240))
-       # sauvegarde de la miniature dans le dossier de bsae
-       nouveau_nom = self.destDir +'/mini_photo-{0}_cam-{1}.jpg'.format(index, cam)
-       cv2.imwrite(nouveau_nom, img)
-       # sauvegarde dans le dossier html pour le voir avec le telephone a l'adresse 192.168.66.5/image.hmtl
-       print('numero________{0}'.format(numeroPhoto))
-       web = '/home/pi/html/image{0}.jpg'.format(numeroPhoto)
-       cv2.imwrite(web, img)
 
-       
-       
    # methode de capture des images
    def record(self, index, time):
     nom = self.destDir + '/video-{0}.mpg'.format(index)
@@ -151,25 +137,25 @@ class Photo():
    def snapTime(self, time):
       self.temps  = time
 
-   def snapAll(self, index, take_miniature = False, numeroPhoto = 1):
+   def snapAll(self, index):
       print('snap prend des photo ({0})'.format(index))
       if index == -1:
          index = self.indexPhoto
 
       self.setCam(1)
-      self.capture(index, (cameraID*self.cameraCount), take_miniature, numeroPhoto)
+      self.capture(index, (cameraID*self.cameraCount))
 
       if self.cameraCount > 1:
         self.setCam(2)
-        self.capture(index, (cameraID*self.cameraCount)+1, take_miniature, numeroPhoto)
+        self.capture(index, (cameraID*self.cameraCount)+1)
 
       if self.cameraCount > 2:
         self.setCam(3)
-        self.capture(index, (cameraID*self.cameraCount)+2, take_miniature, numeroPhoto)
+        self.capture(index, (cameraID*self.cameraCount)+2)
 
       if self.cameraCount > 3:
         self.setCam(4)
-        self.capture(index, (cameraID*self.cameraCount)+3, take_miniature, numeroPhoto)
+        self.capture(index, (cameraID*self.cameraCount)+3)
 
       self.indexPhoto += 1
 
@@ -269,9 +255,8 @@ class MqttCmd():
          # on peut lancer une prise de vue avec plusieurs photo ex 'photo=20'
          if cmd[0] == 'video':
             self.client.publish("ballon/{0}/status".format(self.id_client), "le client :{0} prend une video {1}".format(self.id_client, self.photo.indexPhoto))
-            if len(cmd) == 3:
+            if len(cmd) == 2:
                self.photo.record(self.photo.indexPhoto, int(cmd[1]))
-
             else:
                self.photo.record(self.photo.indexPhoto, -1)
             self.client.publish("ballon/{0}/status".format(self.id_client), "video {0} prise par le client :{1}".format(self.photo.indexPhoto, self.id_client))
@@ -281,18 +266,9 @@ class MqttCmd():
             else:
                try:
                   nbPhotos=int(cmd[1])
-
-                  numeroPhoto =0
                   for ind in range(nbPhotos):
-                      if ind > 0 and ind %5 ==0:
-                          print('numerophoto{0}'.format(numeroPhoto))
-                          numeroPhoto = numeroPhoto +1
-                          self.photo.snapAll(-1, True, numeroPhoto)
-                      else:
-                          self.photo.snapAll(-1)
-                      if numeroPhoto == 4:
-                          numeroPhoto = 0
-                      self.client.publish("ballon/{0}/status".format(self.id_client), "le client :{0} a déjà fait {1} photo sur les {2}".format(self.id_client, ind+1, nbPhotos))
+                     self.photo.snapAll(-1)
+                     self.client.publish("ballon/{0}/status".format(self.id_client), "le client :{0} a déjà fait {1} photo sur les {2}".format(self.id_client, ind+1, nbPhotos))
                   self.client.publish("ballon/{0}/status".format(self.id_client), "le client :{0} a fini ses {1} photos".format(self.id_client, nbPhotos))
                except Exception as e:
                   self.client.publish("ballon/{0}/status".format(self.id_client), "erreur : {1} sur le client :{0},le parametre passé est {2}".format(self.id_client, str(e), cmd[1]))
